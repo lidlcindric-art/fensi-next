@@ -167,3 +167,73 @@ html.lenis { height: auto; }
 /* Radno grid row */
 .rdn-row { display: flex; justify-content: space-between; align-items: baseline; padding: .85rem 0; border-bottom: 1px solid rgba(14,12,10,.08); }
 .rdn-row:first-child { border-top: 1px solid rgba(14,12,10,.08); }
+
+/* ─── WOW BUTTON ──────────────────────────── */
+.btn-wow {
+  position: relative;
+  overflow: hidden;
+  background: var(--gold) !important;
+  color: var(--black) !important;
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s ease !important;
+  box-shadow: 0 4px 20px rgba(196,164,100,.25);
+}
+.btn-wow:hover {
+  transform: translateY(-3px) scale(1.03) !important;
+  box-shadow: 0 12px 40px rgba(196,164,100,.45) !important;
+}
+.btn-wow:active {
+  transform: translateY(-1px) scale(.99) !important;
+}
+
+/* Shimmer sweep */
+.btn-shimmer {
+  position: absolute;
+  top: 0; left: -120%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+  transform: skewX(-20deg);
+  animation: shimmer 2.4s infinite;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0%   { left: -120% }
+  60%  { left: 130% }
+  100% { left: 130% }
+}
+
+/* Pulse ring on hero CTA */
+.btn-wow::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  border: 2px solid rgba(196,164,100,.4);
+  animation: pulsering 2.5s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes pulsering {
+  0%   { opacity: .7; transform: scale(1); }
+  70%  { opacity: 0;  transform: scale(1.12); }
+  100% { opacity: 0;  transform: scale(1.12); }
+}
+
+/* ─── HERO TEXT ───────────────────────────── */
+/* hw = hero word — clip reveal with overflow:hidden parent */
+.split-word { display: block; overflow: hidden; line-height: .9; }
+.hw { display: block; }
+
+/* Fallback if GSAP fails — show text after 2s */
+@keyframes heroWordFallback {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+.hw { animation: heroWordFallback 0s 2s forwards; }
+
+/* hero-anim — starts invisible, GSAP animates it in */
+.hero-anim { opacity: 0; }
+@keyframes heroAnimFallback { to { opacity: 1; } }
+.hero-anim { animation: heroAnimFallback 0s 2.5s forwards; }
+
+/* ─── SECTION SPACING ─────────────────────── */
+#rezervacija { padding-top: 6rem; padding-bottom: 6rem; }
+#radno { padding-top: 5rem; padding-bottom: 5rem; }

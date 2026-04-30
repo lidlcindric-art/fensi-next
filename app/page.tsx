@@ -455,7 +455,7 @@ export default function FensiPage() {
       )}
 
       {/* ── HERO ─────────────────────────────────── */}
-      <section ref={heroRef} id="hero" className="relative flex items-end overflow-hidden" style={{ height: '100dvh', minHeight: '620px', background: 'var(--black)' }}>
+      <section ref={heroRef} id="hero" className="relative flex items-center justify-center overflow-hidden" style={{ height: '100dvh', minHeight: '620px', background: 'var(--black)' }}>
         {/* Background photos */}
         {PHOTOS.map((p, i) => (
           <div key={p.src} className="absolute inset-0 transition-opacity duration-[1400ms] ease-in-out" style={{ opacity: i === slideIdx ? 1 : 0, zIndex: 0 }}>
@@ -545,23 +545,24 @@ export default function FensiPage() {
           </div>
         </div>
         <div className="flex flex-col justify-center px-8 md:px-14 py-16 md:py-24">
-          <div className="flex items-center gap-3 mb-4" data-reveal="up">
-            <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
+          <div className="flex items-center gap-3 mb-5" data-reveal="up">
+            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
             <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--muted)' }}>o salonu</span>
           </div>
-          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 400, lineHeight: 1.05, letterSpacing: '-.3px', color: 'var(--black)', marginBottom: '1rem' }}>
-            Više od salona —<br /><em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>tvoje utočište.</em>
+          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,5vw,3.2rem)', fontWeight: 300, lineHeight: 1.0, letterSpacing: '-.5px', color: 'var(--black)', marginBottom: '1.5rem' }}>
+            Više od salona —<br /><em style={{ fontStyle: 'italic', color: 'var(--gold)', display: 'block', marginTop: '.1rem' }}>tvoje utočište.</em>
           </h2>
-          <p data-reveal="up" data-d="2" style={{ fontSize: '.88rem', color: 'var(--muted)', lineHeight: '1.9', marginBottom: '.8rem' }}>
+          <div data-reveal="up" data-d="2" style={{ width: '40px', height: '1px', background: 'var(--gold)', marginBottom: '1.2rem' }} />
+          <p data-reveal="up" data-d="2" style={{ fontSize: '.9rem', color: 'var(--muted)', lineHeight: '1.95', marginBottom: '1rem', fontWeight: 300 }}>
             U Fensi salonu vjerujemo u moć kose da transformira, osnažuje i nadahnjuje. Od prvog trenutka dobit ćeš artizam, brigu i posvećenost koja tvoju viziju pretvara u stvarnost.
           </p>
-          <p data-reveal="up" data-d="3" style={{ fontSize: '.88rem', color: 'var(--muted)', lineHeight: '1.9' }}>
-            Ovdje svaki detalj ima značenje — jer tvoja kosa priča tvoju priču.
+          <p data-reveal="up" data-d="3" style={{ fontSize: '1.05rem', color: 'var(--muted)', lineHeight: '1.95', fontStyle: 'italic', fontFamily: "'Cormorant Garamond'" }}>
+            "Ovdje svaki detalj ima značenje — jer tvoja kosa priča tvoju priču."
           </p>
-          <div className="flex flex-col gap-3 mt-6" data-reveal="up" data-d="4">
+          <div className="grid grid-cols-1 gap-[1px] mt-7 border-t" style={{ borderColor: 'rgba(14,12,10,.08)' }} data-reveal="up" data-d="4">
             {['Boja, pramenovi & balayage','Keratin tretmani & ravnanje','Valovi & trajna ondulacija','Svečane i svatovske frizure'].map(f => (
-              <div key={f} className="flex items-center gap-3 text-[.82rem]" style={{ color: 'var(--black)' }}>
-                <div style={{ width: '12px', height: '1px', background: 'var(--gold)', flexShrink: 0 }} />
+              <div key={f} className="flex items-center gap-3 py-3 border-b text-[.82rem]" style={{ color: 'var(--ink)', borderColor: 'rgba(14,12,10,.08)' }}>
+                <div style={{ width: '14px', height: '1px', background: 'var(--gold)', flexShrink: 0 }} />
                 {f}
               </div>
             ))}
@@ -571,15 +572,16 @@ export default function FensiPage() {
 
       {/* ── SERVICES ─────────────────────────────── */}
       <section id="usluge" style={{ background: 'var(--dark)', paddingTop: '5rem', paddingBottom: '3rem' }}>
-        <div className="px-6 md:px-16 mb-10">
-          <div className="flex items-center gap-3 mb-4" data-reveal="up">
-            <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
+        <div className="px-6 md:px-16 mb-10 text-center">
+          <div className="flex items-center gap-3 mb-5 justify-center" data-reveal="up">
+            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
             <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.6)' }}>usluge</span>
+            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
           </div>
-          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,6vw,4rem)', fontWeight: 300, letterSpacing: '-.5px', color: 'var(--cream)', lineHeight: 1.05 }}>
-            Kosa kao <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>forma<br />umjetnosti</em>
+          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.5rem,7vw,5rem)', fontWeight: 300, letterSpacing: '-.5px', color: 'var(--cream)', lineHeight: .95 }}>
+            Kosa kao<br /><em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>forma umjetnosti</em>
           </h2>
-          <p data-reveal="up" data-d="2" style={{ fontSize: '.82rem', color: 'rgba(245,241,235,.38)', marginTop: '.7rem', lineHeight: '1.8', maxWidth: '400px' }}>
+          <p data-reveal="up" data-d="2" style={{ fontSize: '.85rem', color: 'rgba(245,241,235,.4)', marginTop: '1.2rem', lineHeight: '1.85', maxWidth: '380px', margin: '1.2rem auto 0' }}>
             Naše usluge osmišljene su da pretvore tvoju kosu u remek-djelo.
           </p>
         </div>
@@ -605,26 +607,29 @@ export default function FensiPage() {
             </div>
           ))}
         </div>
-        <div className="px-6 md:px-16 pt-4">
-          <button className="magnetic cta-main flex items-center gap-3 px-8 py-4 rounded-full text-[.65rem] tracking-[2.5px] uppercase font-medium transition-all"
-            style={{ background: 'var(--gold)', color: 'var(--black)', border: 'none' }}
+        <div className="px-6 md:px-16 pt-6 flex justify-center">
+          <button className="magnetic btn-wow flex items-center gap-3 px-10 py-[1.1rem] rounded-full text-[.68rem] tracking-[3px] uppercase font-medium"
+            style={{ background: 'var(--gold)', color: 'var(--black)', border: 'none', position: 'relative', overflow: 'hidden' }}
             onClick={() => document.getElementById('rezervacija')?.scrollIntoView({ behavior: 'smooth' })}>
-            rezerviraj danas →
+            <span style={{ position: 'relative', zIndex: 1 }}>rezerviraj sada</span>
+            <span className="btn-shimmer" />
+            <span style={{ fontSize: '.95rem', position: 'relative', zIndex: 1 }}>→</span>
           </button>
         </div>
       </section>
 
       {/* ── GALLERY ──────────────────────────────── */}
       <section id="galerija" style={{ background: 'var(--dark2)', paddingTop: '5rem', paddingBottom: '3rem' }}>
-        <div className="px-6 md:px-16 mb-10">
-          <div className="flex items-center gap-3 mb-3" data-reveal="up">
-            <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
-            <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.6)' }}>galerija</span>
+        <div className="px-6 md:px-16 mb-10 text-center">
+          <div className="flex items-center gap-3 mb-5 justify-center" data-reveal="up">
+            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
+            <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.6)' }}>galerija radova</span>
+            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
           </div>
-          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2rem,6vw,3.5rem)', fontWeight: 300, letterSpacing: '-.3px', color: 'var(--cream)' }}>
+          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,6vw,4rem)', fontWeight: 300, letterSpacing: '-.3px', color: 'var(--cream)' }}>
             Inspiriraj se <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>našim radovima.</em>
           </h2>
-          <p data-reveal="up" data-d="2" style={{ fontSize: '.78rem', color: 'rgba(245,241,235,.38)', marginTop: '.5rem', lineHeight: '1.8' }}>
+          <p data-reveal="up" data-d="2" style={{ fontSize: '.82rem', color: 'rgba(245,241,235,.4)', marginTop: '.8rem', lineHeight: '1.85', maxWidth: '360px', margin: '.8rem auto 0' }}>
             Svaki stil odražava artizam, preciznost i individualnost.
           </p>
         </div>
@@ -643,11 +648,11 @@ export default function FensiPage() {
       </section>
 
       {/* ── TESTIMONIALS ─────────────────────────── */}
-      <section style={{ background: 'var(--black)', padding: '5rem 1.5rem', textAlign: 'center' }}>
-        <div className="flex items-center justify-center gap-3 mb-8" data-reveal="up">
-          <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
-          <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.6)' }}>recenzije</span>
-          <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
+      <section style={{ background: 'var(--black)', padding: '6rem 1.5rem', textAlign: 'center' }}>
+        <div className="flex items-center justify-center gap-3 mb-6" data-reveal="up">
+          <div style={{ width: '28px', height: '1px', background: 'var(--gold)' }} />
+          <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.6)' }}>što kažu klientice</span>
+          <div style={{ width: '28px', height: '1px', background: 'var(--gold)' }} />
         </div>
         <div className="max-w-2xl mx-auto" data-reveal="up" data-d="1">
           <p style={{ fontFamily: "'Cormorant Garamond'", fontStyle: 'italic', fontSize: 'clamp(1.3rem,3.5vw,2rem)', fontWeight: 300, color: 'var(--cream)', lineHeight: '1.55', letterSpacing: '-.1px', transition: 'opacity .5s', textAlign: 'center', maxWidth: '640px', margin: '0 auto' }}>
@@ -691,14 +696,15 @@ export default function FensiPage() {
 
       {/* ── REZERVACIJA ──────────────────────────── */}
       <section id="rezervacija" style={{ background: 'var(--dark)', padding: '5rem 2rem' }} className="md:px-16">
-        <div className="flex items-center gap-3 mb-3" data-reveal="up">
-          <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
+        <div className="flex items-center gap-3 mb-5 justify-center" data-reveal="up">
+          <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
           <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.5)' }}>online rezervacija</span>
+          <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
         </div>
-        <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 300, letterSpacing: '-.3px', color: 'var(--cream)', marginBottom: '.5rem' }}>
+        <h2 data-reveal="up" data-d="1" className="text-center" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,5vw,3.5rem)', fontWeight: 300, letterSpacing: '-.5px', color: 'var(--cream)', marginBottom: '.6rem' }}>
           Rezerviraj <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>termin</em><br />kod Đurđice.
         </h2>
-        <p data-reveal="up" data-d="2" style={{ fontSize: '.82rem', color: 'rgba(245,241,235,.38)', marginBottom: '2.5rem', lineHeight: '1.8' }}>Odaberi datum i slobodan termin — čekamo te.</p>
+        <p data-reveal="up" data-d="2" className="text-center" style={{ fontSize: '.85rem', color: 'rgba(245,241,235,.4)', marginBottom: '2.5rem', lineHeight: '1.85', maxWidth: '360px', margin: '0 auto 2.5rem' }}>Odaberi datum i slobodan termin — čekamo te.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Calendar */}
@@ -791,11 +797,11 @@ export default function FensiPage() {
       {/* ── CONTACT ──────────────────────────────── */}
       <section id="kontakt" className="grid grid-cols-1 md:grid-cols-2" style={{ background: 'var(--cream)', color: 'var(--black)' }}>
         <div className="flex flex-col justify-center px-8 md:px-14 py-16">
-          <div className="flex items-center gap-3 mb-4" data-reveal="up">
-            <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
+          <div className="flex items-center gap-3 mb-5" data-reveal="up">
+            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
             <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--muted)' }}>kontakt</span>
           </div>
-          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 400, letterSpacing: '-.3px', color: 'var(--black)', marginBottom: '1.5rem' }}>
+          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,5vw,3.2rem)', fontWeight: 300, letterSpacing: '-.5px', color: 'var(--black)', marginBottom: '1.8rem', lineHeight: 1.05 }}>
             Tvoj savršen<br /><em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>look čeka te.</em>
           </h2>
           <div className="flex flex-col gap-4" data-reveal="up" data-d="2">
