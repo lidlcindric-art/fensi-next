@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
+import ParticleWave from './components/ParticleWave'
 
 // ─── TYPES ────────────────────────────────
 interface Appointment { id: string; name: string; phone: string; email: string; service: string; date: string; time: string; note: string; status: string }
@@ -321,6 +322,9 @@ export default function FensiPage() {
           background:'linear-gradient(rgba(21,2,24,0) 0%, rgba(21,2,24,1) 100%)',pointerEvents:'none'}}/>
         <div style={{position:'absolute',bottom:0,left:0,right:0,height:'33%',zIndex:1,
           background:'linear-gradient(rgba(21,2,24,0) 0%, rgba(21,2,24,1) 100%)',pointerEvents:'none'}}/>
+
+        {/* PARTICLE WAVE — SR7 tp-particlewave recreation, z-index:2 like template */}
+        <ParticleWave />
 
         {/* FIXED NAV — template: logo left, two-col links right */}
         <div style={{
