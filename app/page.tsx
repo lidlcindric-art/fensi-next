@@ -341,69 +341,108 @@ export default function FensiPage() {
         </div>
       )}
 
-      {/* ══ HERO ════════════════════════════════ */}
-      <section style={{position:'relative',width:'100%',minHeight:'100dvh',overflow:'hidden',background:'var(--plum)',display:'flex',alignItems:'flex-end'}}>
-        {/* Background photo */}
-        <div style={{position:'absolute',inset:0,zIndex:0}}>
-          <Image src="/photos/chocolate-waves.jpg" alt="Fensi Salon" fill style={{objectFit:'cover',objectPosition:'center 15%',filter:'brightness(.55)'}} priority sizes="100vw"/>
+      {/* ══ HERO — identical to SR template ════ */}
+      <section style={{position:'relative',width:'100%',height:'100dvh',minHeight:'640px',overflow:'hidden',background:'var(--plum)'}}>
+
+        {/* PHOTO — right-weighted like template woman-hero.png */}
+        {/* Template: image at left:146px, width:~962px in 1254px container (~77% width, starting ~11.6% from left) */}
+        <div style={{position:'absolute',top:0,right:0,bottom:0,left:'12%',zIndex:0}}>
+          <Image src="/photos/chocolate-waves.jpg" alt="Fensi" fill style={{objectFit:'cover',objectPosition:'center 12%',filter:'brightness(.65)'}} priority sizes="88vw"/>
         </div>
-        {/* Gradient overlays matching template */}
+
+        {/* GRADIENT — bottom: transparent → solid (template: covers bottom 1/3) */}
         <div style={{position:'absolute',inset:0,zIndex:1,background:'linear-gradient(rgba(21,2,24,0) 0%, rgba(21,2,24,1) 100%)'}}/>
-        <div style={{position:'absolute',top:0,left:0,bottom:0,width:'40%',zIndex:1,background:'linear-gradient(270deg,rgba(21,2,24,0) 0%,rgba(21,2,24,.7) 100%)'}}/>
+        {/* LEFT gradient: solid → transparent (template: left 33%) */}
+        <div style={{position:'absolute',top:0,left:0,bottom:0,width:'45%',zIndex:1,background:'linear-gradient(to right, rgba(21,2,24,.9) 0%, rgba(21,2,24,.4) 60%, rgba(21,2,24,0) 100%)'}}/>
+        {/* TOP gradient: solid → transparent (template has top fade too) */}
+        <div style={{position:'absolute',top:0,left:0,right:0,height:'30%',zIndex:1,background:'linear-gradient(rgba(21,2,24,.6) 0%, rgba(21,2,24,0) 100%)'}}/>
 
-        {/* Hero content — two-column layout like template */}
-        <div style={{position:'relative',zIndex:2,width:'100%',padding:'0 5% 6% 6%',display:'grid',gridTemplateColumns:'1fr',gap:'2rem'}}>
-          <div className="md:grid" style={{gridTemplateColumns:'66.667% 33.333%',gap:'0',alignItems:'flex-end',display:'grid'}}>
-            {/* LEFT: big headline */}
-            <div>
-              {/* "scroll down" label */}
-              <div style={{
-                fontFamily:"'Josefin Sans'",fontSize:'.75rem',fontWeight:400,textTransform:'uppercase',
-                letterSpacing:'2px',color:'rgba(239,215,202,.5)',marginBottom:'1.5rem',
-                opacity: heroLoaded ? 1 : 0, transition: 'opacity .5s .2s',
-              }}>scroll down</div>
-
-              {/* Main headline — clip reveal, matching template 95px */}
-              <h1 style={{fontFamily:"'Josefin Sans'",fontWeight:600,lineHeight:1,textTransform:'uppercase',letterSpacing:0,color:'var(--cream)'}}>
-                <span className="hero-line" style={{overflow:'hidden',display:'block'}}>
-                  <span className="hero-word" style={{display:'block',transform:heroLoaded?'none':'translateY(-95px)',opacity:heroLoaded?1:0,transition:'transform .7s .3s cubic-bezier(.16,1,.3,1), opacity .5s .3s',fontSize:'clamp(3.5rem,8vw,6.5rem)'}}>
-                    Ljepota
-                  </span>
-                </span>
-                <span className="hero-line" style={{overflow:'hidden',display:'block'}}>
-                  <span className="hero-word" style={{display:'block',transform:heroLoaded?'none':'translateY(-95px)',opacity:heroLoaded?1:0,transition:'transform .7s .42s cubic-bezier(.16,1,.3,1), opacity .5s .42s',fontSize:'clamp(3.5rem,8vw,6.5rem)'}}>
-                    Izvan
-                  </span>
-                </span>
-                <span className="hero-line" style={{overflow:'hidden',display:'block'}}>
-                  <span className="hero-word" style={{display:'block',transform:heroLoaded?'none':'translateY(-95px)',opacity:heroLoaded?1:0,transition:'transform .7s .54s cubic-bezier(.16,1,.3,1), opacity .5s .54s',fontSize:'clamp(3.5rem,8vw,6.5rem)'}}>
-                    Granica
-                  </span>
-                </span>
-              </h1>
+        {/* NAV — two vertical columns on right (template pattern) */}
+        <div style={{position:'absolute',top:0,left:0,right:0,zIndex:10,display:'flex',justifyContent:'space-between',alignItems:'flex-start',padding:'2.5rem 5% 0 5%'}}>
+          {/* Logo */}
+          <div style={{fontFamily:"'Josefin Sans'",fontSize:'1.3rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'3px',color:'var(--cream)'}}>Fensi</div>
+          {/* Two-column nav (template: right side, 16.67% + 16.67%) */}
+          <div style={{display:'flex',gap:'3rem'}}>
+            <div style={{display:'flex',flexDirection:'column',gap:'.15rem'}}>
+              {[['o salonu','#osalonu'],['usluge','#usluge'],['rezervacija','#rezervacija']].map(([l,h])=>(
+                <a key={l} href={h} style={{fontFamily:"'Josefin Sans'",fontSize:'.72rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'rgba(239,215,202,.6)',lineHeight:'2',textDecoration:'none',transition:'color .2s'}}
+                  onMouseEnter={e=>(e.target as HTMLElement).style.color='var(--cream)'}
+                  onMouseLeave={e=>(e.target as HTMLElement).style.color='rgba(239,215,202,.6)'}>{l}</a>
+              ))}
             </div>
-
-            {/* RIGHT: subtitle + book button, bottom-aligned (matching template right column) */}
-            <div style={{textAlign:'right',display:'flex',flexDirection:'column',justifyContent:'flex-end',gap:'1.5rem',paddingBottom:'.5rem'}}>
-              <div style={{opacity:heroLoaded?1:0,transform:heroLoaded?'none':'translateY(20px)',transition:'all .6s .8s'}}>
-                <p style={{fontFamily:"'Inter'",fontSize:'1rem',letterSpacing:'1px',color:'var(--cream)',lineHeight:'1.6',marginBottom:'.5rem'}}>
-                  Zajedno stvaramo nešto izvanredno!
-                </p>
-                <p style={{fontFamily:"'Inter'",fontSize:'.95rem',letterSpacing:'1px',color:'rgba(239,215,202,.6)',lineHeight:'1.6'}}>
-                  Frizura koja govori o tebi.
-                </p>
-              </div>
-              <div style={{opacity:heroLoaded?1:0,transition:'opacity .5s 1s',display:'flex',justifyContent:'flex-end'}}>
-                <button
-                  className="book-btn"
-                  onClick={()=>document.getElementById('rezervacija')?.scrollIntoView({behavior:'smooth'})}
-                >
-                  rezerviraj danas <span className="barrow">↗</span>
-                </button>
-              </div>
+            <div style={{display:'flex',flexDirection:'column',gap:'.15rem'}}>
+              {[['galerija','#galerija'],['recenzije','#testimonials'],['kontakt','#kontakt']].map(([l,h])=>(
+                <a key={l} href={h} style={{fontFamily:"'Josefin Sans'",fontSize:'.72rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'rgba(239,215,202,.6)',lineHeight:'2',textDecoration:'none',transition:'color .2s'}}
+                  onMouseEnter={e=>(e.target as HTMLElement).style.color='var(--cream)'}
+                  onMouseLeave={e=>(e.target as HTMLElement).style.color='rgba(239,215,202,.6)'}>{l}</a>
+              ))}
             </div>
           </div>
         </div>
+
+        {/* BOTTOM CONTENT — two-column like template (66.67% left, 33.33% right) */}
+        <div style={{position:'absolute',bottom:0,left:0,right:0,zIndex:2,padding:'0 5% 5% 5%',display:'grid',gridTemplateColumns:'66.667% 33.333%',alignItems:'flex-end',gap:0}}>
+
+          {/* LEFT COL: "Beauty Beyond" equivalent — huge headline + scroll down */}
+          <div>
+            {/* Main headline — clip reveal from -95px (exact template animation) */}
+            <h1 style={{fontFamily:"'Josefin Sans'",fontWeight:600,lineHeight:1,textTransform:'uppercase',letterSpacing:0,color:'var(--cream)',margin:0}}>
+              {/* "Beauty Beyond" = our "Ljepota Izvan" on line 1 */}
+              <span style={{overflow:'hidden',display:'block'}}>
+                <span style={{display:'block',transform:heroLoaded?'translateY(0)':'translateY(-95px)',opacity:heroLoaded?1:0,transition:'transform .7s .25s cubic-bezier(.16,1,.3,1),opacity .5s .25s',fontSize:'clamp(3.8rem,9vw,7.5rem)',lineHeight:1}}>
+                  Ljepota Izvan
+                </span>
+              </span>
+              {/* Second line = "Granica" */}
+              <span style={{overflow:'hidden',display:'block'}}>
+                <span style={{display:'block',transform:heroLoaded?'translateY(0)':'translateY(-95px)',opacity:heroLoaded?1:0,transition:'transform .7s .38s cubic-bezier(.16,1,.3,1),opacity .5s .38s',fontSize:'clamp(3.8rem,9vw,7.5rem)',lineHeight:1}}>
+                  Granica
+                </span>
+              </span>
+            </h1>
+
+            {/* "scroll down" — inline with title, like template */}
+            <div style={{overflow:'hidden',marginTop:'.8rem'}}>
+              <span style={{display:'block',fontFamily:"'Josefin Sans'",fontSize:'.78rem',fontWeight:400,textTransform:'uppercase',letterSpacing:'2px',color:'rgba(239,215,202,.5)',transform:heroLoaded?'translateY(0)':'translateY(-40px)',opacity:heroLoaded?1:0,transition:'transform .6s .6s cubic-bezier(.16,1,.3,1),opacity .4s .6s'}}>
+                scroll down
+              </span>
+            </div>
+          </div>
+
+          {/* RIGHT COL: subtitle + "book today" button (bottom-aligned, right-align) */}
+          <div style={{textAlign:'right',display:'flex',flexDirection:'column',justifyContent:'flex-end',paddingBottom:'.5rem',gap:'1.2rem'}}>
+            {/* Subtitle lines — each in clip wrap */}
+            <div>
+              <div style={{overflow:'hidden'}}>
+                <p style={{fontFamily:"'Inter'",fontSize:'1rem',letterSpacing:'1px',color:'var(--cream)',lineHeight:'1.7',transform:heroLoaded?'translateY(0)':'translateY(-30px)',opacity:heroLoaded?1:0,transition:'transform .6s .7s cubic-bezier(.16,1,.3,1),opacity .5s .7s'}}>
+                  Zajedno stvaramo nešto izvanredno!
+                </p>
+              </div>
+              <div style={{overflow:'hidden'}}>
+                <p style={{fontFamily:"'Inter'",fontSize:'.95rem',letterSpacing:'1px',color:'rgba(239,215,202,.6)',lineHeight:'1.7',transform:heroLoaded?'translateY(0)':'translateY(-30px)',opacity:heroLoaded?1:0,transition:'transform .6s .82s cubic-bezier(.16,1,.3,1),opacity .5s .82s'}}>
+                  Frizura koja govori o tebi.
+                </p>
+              </div>
+            </div>
+            {/* "book today" button with diagonal arrow — exact template style */}
+            <div style={{overflow:'hidden',display:'flex',justifyContent:'flex-end'}}>
+              <button
+                className="book-btn"
+                style={{transform:heroLoaded?'translateY(0)':'translateY(-42px)',opacity:heroLoaded?1:0,transition:'transform .6s .95s cubic-bezier(.16,1,.3,1),opacity .5s .95s'}}
+                onClick={()=>document.getElementById('rezervacija')?.scrollIntoView({behavior:'smooth'})}
+              >
+                rezerviraj danas <span className="barrow">↗</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile: simplified layout */}
+        <style>{`
+          @media(max-width:767px){
+            .hero-grid { grid-template-columns: 1fr !important; }
+          }
+        `}</style>
       </section>
 
       {/* ══ ABOUT ═══════════════════════════════ */}
@@ -629,33 +668,38 @@ export default function FensiPage() {
         </div>
 
         <div style={{display:'grid',gridTemplateColumns:'1fr',gap:'2rem'}} className="md:grid-cols-2">
-          {/* Calendar */}
-          <div data-r="left" style={{background:'rgba(239,215,202,.03)',border:'1px solid rgba(239,215,202,.07)',padding:'2rem'}}>
-            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'1.2rem'}}>
-              <button onClick={()=>{setCalMonth(m=>{if(m===0){setCalYear(y=>y-1);return 11}return m-1})}} style={{background:'none',border:'1px solid rgba(239,215,202,.1)',color:'rgba(239,215,202,.4)',width:'28px',height:'28px',borderRadius:'50%',cursor:'pointer',fontSize:'.85rem'}}>‹</button>
-              <span style={{fontFamily:"'Josefin Sans'",fontSize:'1rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'var(--cream)'}}>{MONTH_NAMES[calMonth]} {calYear}</span>
-              <button onClick={()=>{setCalMonth(m=>{if(m===11){setCalYear(y=>y+1);return 0}return m+1})}} style={{background:'none',border:'1px solid rgba(239,215,202,.1)',color:'rgba(239,215,202,.4)',width:'28px',height:'28px',borderRadius:'50%',cursor:'pointer',fontSize:'.85rem'}}>›</button>
+          {/* Calendar — compact */}
+          <div data-r="left" style={{background:'rgba(239,215,202,.03)',border:'1px solid rgba(239,215,202,.07)',padding:'1.2rem'}}>
+            {/* Month nav */}
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'.8rem'}}>
+              <button onClick={()=>{setCalMonth(m=>{if(m===0){setCalYear(y=>y-1);return 11}return m-1})}} style={{background:'none',border:'none',color:'rgba(239,215,202,.5)',cursor:'pointer',fontSize:'1rem',padding:'0 .4rem',lineHeight:1}}>‹</button>
+              <span style={{fontFamily:"'Josefin Sans'",fontSize:'.78rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'var(--cream)'}}>{MONTH_NAMES[calMonth].substring(0,3)} {calYear}</span>
+              <button onClick={()=>{setCalMonth(m=>{if(m===11){setCalYear(y=>y+1);return 0}return m+1})}} style={{background:'none',border:'none',color:'rgba(239,215,202,.5)',cursor:'pointer',fontSize:'1rem',padding:'0 .4rem',lineHeight:1}}>›</button>
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:'2px',marginBottom:'4px'}}>
-              {['Pon','Uto','Sri','Čet','Pet','Sub','Ned'].map(d=><div key={d} style={{textAlign:'center',fontFamily:"'Josefin Sans'",fontSize:'.58rem',letterSpacing:'1px',textTransform:'uppercase',color:'rgba(239,215,202,.25)',padding:'.3rem 0'}}>{d}</div>)}
+            {/* Day names */}
+            <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:'1px',marginBottom:'2px'}}>
+              {['P','U','S','Č','P','S','N'].map((d,i)=><div key={i} style={{textAlign:'center',fontFamily:"'Josefin Sans'",fontSize:'.55rem',letterSpacing:'.5px',textTransform:'uppercase',color:'rgba(239,215,202,.2)',padding:'.2rem 0'}}>{d}</div>)}
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:'2px'}}>
+            {/* Days grid — more compact */}
+            <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:'1px'}}>
               {calDays().map((day,i)=>(
                 <div key={i} onClick={()=>!day.empty&&!day.past&&!day.closed&&handleSelectDate(day.ds)}
-                  className={`cal-day ${day.empty?'empty':''} ${day.past?'past':''} ${day.closed&&!day.empty&&!day.past?'closed':''} ${day.isToday?'today':''} ${day.selected?'selected':''}`}>
+                  style={{aspectRatio:'1',display:'flex',alignItems:'center',justifyContent:'center',borderRadius:'50%',fontSize:'.72rem',cursor:day.empty||day.past||day.closed?'default':'pointer',color:day.selected?'var(--plum)':day.isToday?'var(--cream)':'rgba(239,215,202,.4)',background:day.selected?'var(--cream)':day.isToday?'rgba(239,215,202,.12)':'transparent',opacity:day.past||day.closed?0.18:1,fontWeight:day.isToday?600:400,minHeight:'26px',transition:'all .15s',textDecoration:day.closed&&!day.empty&&!day.past?'line-through':'none'}}
+                >
                   {day.empty?'':day.d}
                 </div>
               ))}
             </div>
+            {/* Slots */}
             {selDate&&(
-              <div style={{marginTop:'1.2rem'}}>
-                <div style={{fontFamily:"'Josefin Sans'",fontSize:'.6rem',letterSpacing:'2px',textTransform:'uppercase',color:'rgba(239,215,202,.3)',marginBottom:'.6rem'}}>slobodni termini</div>
-                {slotsLoading?<p style={{fontFamily:"'Inter'",fontSize:'.8rem',color:'rgba(239,215,202,.3)'}}>Učitavam...</p>:(
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'3px'}}>
-                    {slots.length===0?<p style={{fontSize:'.75rem',color:'rgba(239,215,202,.3)',gridColumn:'1/-1',textAlign:'center'}}>Nema termina</p>:
+              <div style={{marginTop:'.9rem',borderTop:'1px solid rgba(239,215,202,.06)',paddingTop:'.8rem'}}>
+                <div style={{fontFamily:"'Josefin Sans'",fontSize:'.55rem',letterSpacing:'2px',textTransform:'uppercase',color:'rgba(239,215,202,.3)',marginBottom:'.5rem'}}>termini — {selDate}</div>
+                {slotsLoading?<p style={{fontFamily:"'Inter'",fontSize:'.75rem',color:'rgba(239,215,202,.3)'}}>...</p>:(
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'2px'}}>
+                    {slots.length===0?<p style={{fontSize:'.7rem',color:'rgba(239,215,202,.25)',gridColumn:'1/-1',textAlign:'center'}}>Nema slobodnih</p>:
                       slots.map(s=>{const tk=s.startsWith('taken:');const t=tk?s.replace('taken:',''):s;return(
                         <button key={s} onClick={()=>!tk&&setSelTime(t)}
-                          className={`slot-btn ${tk?'taken':''} ${selTime===t?'selected':''}`}>{t}</button>
+                          style={{background:selTime===t?'var(--cream)':tk?'transparent':'rgba(239,215,202,.04)',border:`1px solid ${selTime===t?'var(--cream)':tk?'rgba(239,215,202,.05)':'rgba(239,215,202,.1)'}`,padding:'.35rem .2rem',textAlign:'center',fontSize:'.68rem',fontFamily:"'Josefin Sans'",letterSpacing:'.3px',cursor:tk?'not-allowed':'pointer',color:selTime===t?'var(--plum)':tk?'rgba(239,215,202,.15)':'rgba(239,215,202,.6)',textDecoration:tk?'line-through':'none',transition:'all .15s'}}>{t}</button>
                       )})
                     }
                   </div>
