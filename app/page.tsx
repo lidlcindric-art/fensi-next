@@ -66,6 +66,7 @@ export default function FensiPage() {
 
   // Hero
   const [heroLoaded, setHeroLoaded] = useState(false)
+  const [heroPhotoIdx, setHeroPhotoIdx] = useState(0)
   // Services
   const [srvIdx, setSrvIdx] = useState(0)
   // Testimonials
@@ -108,7 +109,7 @@ export default function FensiPage() {
         onComplete: () => {
           gsap.to(loaderRef.current, {
             yPercent: -100, duration: .8, ease: 'power3.inOut',
-            onComplete: () => { if(loaderRef.current) loaderRef.current.style.display='none'; setHeroLoaded(true) }
+            onComplete: () => { if(loaderRef.current) loaderRef.current.style.display='none'; setHeroLoaded(true); const t=setInterval(()=>setHeroPhotoIdx(i=>(i+1)%3),4500); return ()=>clearInterval(t) }
           })
           initAnims(gsap, ScrollTrigger)
         }
@@ -288,97 +289,75 @@ export default function FensiPage() {
         <div ref={loaderBarRef} className="loader-bar" />
       </div>
 
-      {/* ══ NAV ═════════════════════════════════ */}
-      <nav
-        style={{
-          position:'fixed',top:0,left:0,right:0,zIndex:200,
-          padding: navSolid ? '1.1rem 5%' : '2rem 5%',
-          display:'flex',alignItems:'center',justifyContent:'space-between',
-          transition:'all .5s',
-          background: navSolid ? 'rgba(21,2,24,.94)' : 'transparent',
-          backdropFilter: navSolid ? 'blur(20px)' : 'none',
-          borderBottom: navSolid ? '1px solid rgba(239,215,202,.06)' : 'none',
-        }}
-      >
-        <a href="#" style={{ fontFamily:"'Josefin Sans'",fontSize:'1.4rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'3px',color:'var(--cream)' }}>
-          Fensi
-        </a>
-        <div style={{display:'flex',gap:'3rem',alignItems:'center'}}>
-          <ul className="hidden md:flex" style={{gap:'2rem',listStyle:'none'}}>
-            {[['o salonu','#osalonu'],['usluge','#usluge'],['galerija','#galerija'],['kontakt','#kontakt']].map(([l,h])=>(
-              <li key={l}><a href={h} style={{fontFamily:"'Josefin Sans'",fontSize:'.72rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'rgba(239,215,202,.55)',textDecoration:'none',transition:'color .2s'}}
-                onMouseEnter={e=>(e.target as HTMLElement).style.color='var(--cream)'}
-                onMouseLeave={e=>(e.target as HTMLElement).style.color='rgba(239,215,202,.55)'}
-              >{l}</a></li>
-            ))}
-          </ul>
-          <button
-            className="book-btn hidden md:inline-flex"
-            onClick={()=>document.getElementById('rezervacija')?.scrollIntoView({behavior:'smooth'})}
-          >
-            rezerviraj <span className="barrow">↗</span>
-          </button>
-          <button className="md:hidden bg-transparent border-0 flex flex-col gap-[5px] p-1" onClick={()=>setDrawerOpen(o=>!o)}>
-            <span style={{display:'block',width:'22px',height:'1px',background:'rgba(239,215,202,.7)',transition:'all .3s',transform:drawerOpen?'translateY(6px) rotate(45deg)':'none'}}/>
-            <span style={{display:'block',width:'22px',height:'1px',background:'rgba(239,215,202,.7)',transition:'all .3s',opacity:drawerOpen?0:1}}/>
-            <span style={{display:'block',width:'22px',height:'1px',background:'rgba(239,215,202,.7)',transition:'all .3s',transform:drawerOpen?'translateY(-6px) rotate(-45deg)':'none'}}/>
-          </button>
-        </div>
-      </nav>
 
-      {/* Mobile drawer */}
-      {drawerOpen && (
-        <div style={{position:'fixed',inset:0,zIndex:199,background:'rgba(21,2,24,.85)',backdropFilter:'blur(8px)'}} onClick={()=>setDrawerOpen(false)}>
-          <div style={{position:'absolute',right:0,top:0,bottom:0,width:'280px',background:'#1e0428',padding:'5rem 2rem 3rem'}} onClick={e=>e.stopPropagation()}>
-            {[['O salonu','#osalonu'],['Usluge','#usluge'],['Galerija','#galerija'],['Rezervacija','#rezervacija'],['Kontakt','#kontakt']].map(([l,h])=>(
-              <a key={l} href={h} onClick={()=>setDrawerOpen(false)} style={{display:'block',padding:'.8rem 0',fontFamily:"'Josefin Sans'",fontSize:'.72rem',fontWeight:600,letterSpacing:'1px',textTransform:'uppercase',color:'rgba(239,215,202,.5)',borderBottom:'1px solid rgba(239,215,202,.06)',textDecoration:'none'}}>{l}</a>
-            ))}
-            <button style={{marginTop:'2rem',width:'100%',background:'var(--cream)',color:'var(--plum)',border:'none',padding:'.9rem',fontFamily:"'Josefin Sans'",fontSize:'.72rem',fontWeight:600,letterSpacing:'1.5px',textTransform:'uppercase',cursor:'pointer'}}
-              onClick={()=>{document.getElementById('rezervacija')?.scrollIntoView({behavior:'smooth'});setDrawerOpen(false)}}>
-              Rezerviraj termin
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* ══ HERO — identical to SR template ════ */}
       <section style={{position:'relative',width:'100%',height:'100dvh',minHeight:'640px',overflow:'hidden',background:'var(--plum)'}}>
 
-        {/* PHOTO — right-weighted like template woman-hero.png */}
-        {/* Template: image at left:146px, width:~962px in 1254px container (~77% width, starting ~11.6% from left) */}
-        <div style={{position:'absolute',top:0,right:0,bottom:0,left:'12%',zIndex:0}}>
-          <Image src="/photos/chocolate-waves.jpg" alt="Fensi" fill style={{objectFit:'cover',objectPosition:'center 12%',filter:'brightness(.65)'}} priority sizes="88vw"/>
-        </div>
+        {/* PHOTOS — cycling slideshow, portrait orientation, right-weighted
+            Template: photo at left:11.6% → right edge, full height portrait */}
+        {['/photos/dark-black-waves.jpg','/photos/bob-highlights.jpg','/photos/straight-brown.jpg'].map((src,i)=>(
+          <div key={src} style={{
+            position:'absolute',top:0,bottom:0,right:0,left:0,zIndex:0,
+            opacity: heroPhotoIdx===i ? 1 : 0,
+            transition:'opacity 1.4s ease-in-out',
+          }}>
+            <Image src={src} alt="Fensi" fill style={{objectFit:'cover',objectPosition:'75% 15%',filter:'brightness(.62)'}} priority={i===0} sizes="100vw"/>
+          </div>
+        ))}
 
-        {/* GRADIENT — bottom: transparent → solid (template: covers bottom 1/3) */}
-        <div style={{position:'absolute',inset:0,zIndex:1,background:'linear-gradient(rgba(21,2,24,0) 0%, rgba(21,2,24,1) 100%)'}}/>
-        {/* LEFT gradient: solid → transparent (template: left 33%) */}
-        <div style={{position:'absolute',top:0,left:0,bottom:0,width:'45%',zIndex:1,background:'linear-gradient(to right, rgba(21,2,24,.9) 0%, rgba(21,2,24,.4) 60%, rgba(21,2,24,0) 100%)'}}/>
-        {/* TOP gradient: solid → transparent (template has top fade too) */}
-        <div style={{position:'absolute',top:0,left:0,right:0,height:'30%',zIndex:1,background:'linear-gradient(rgba(21,2,24,.6) 0%, rgba(21,2,24,0) 100%)'}}/>
+        {/* GRADIENTS — exact template pattern */}
+        {/* Bottom: rgba(21,2,24,0) 0% → rgba(21,2,24,1) 100% - covers bottom ~33% */}
+        <div style={{position:'absolute',bottom:0,left:0,right:0,height:'45%',zIndex:1,background:'linear-gradient(rgba(21,2,24,0) 0%, rgba(21,2,24,1) 100%)',pointerEvents:'none'}}/>
+        {/* Left: template has left gradient over ~33% width */}
+        <div style={{position:'absolute',top:0,left:0,bottom:0,width:'50%',zIndex:1,background:'linear-gradient(to right, rgba(21,2,24,.85) 0%, rgba(21,2,24,.5) 50%, rgba(21,2,24,0) 100%)',pointerEvents:'none'}}/>
 
-        {/* NAV — two vertical columns on right (template pattern) */}
-        <div style={{position:'absolute',top:0,left:0,right:0,zIndex:10,display:'flex',justifyContent:'space-between',alignItems:'flex-start',padding:'2.5rem 5% 0 5%'}}>
+        {/* FIXED NAV — template: logo left, two-col links right */}
+        <div style={{
+          position:'fixed',top:0,left:0,right:0,zIndex:200,
+          display:'flex',justifyContent:'space-between',alignItems:'flex-start',
+          padding: navSolid ? '1rem 5%' : '2.2rem 5%',
+          background: navSolid ? 'rgba(21,2,24,.95)' : 'transparent',
+          backdropFilter: navSolid ? 'blur(20px)' : 'none',
+          borderBottom: navSolid ? '1px solid rgba(239,215,202,.07)' : 'none',
+          transition:'all .45s ease',
+        }}>
           {/* Logo */}
-          <div style={{fontFamily:"'Josefin Sans'",fontSize:'1.3rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'3px',color:'var(--cream)'}}>Fensi</div>
-          {/* Two-column nav (template: right side, 16.67% + 16.67%) */}
-          <div style={{display:'flex',gap:'3rem'}}>
-            <div style={{display:'flex',flexDirection:'column',gap:'.15rem'}}>
+          <a href="#" style={{fontFamily:"'Josefin Sans'",fontSize:'1.25rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'3px',color:'var(--cream)',textDecoration:'none'}}>Fensi</a>
+          {/* Desktop: two-col vertical nav (exact template) */}
+          <div className="hidden md:flex" style={{gap:'2.5rem',alignItems:'flex-start'}}>
+            <div style={{display:'flex',flexDirection:'column',gap:0}}>
               {[['o salonu','#osalonu'],['usluge','#usluge'],['rezervacija','#rezervacija']].map(([l,h])=>(
-                <a key={l} href={h} style={{fontFamily:"'Josefin Sans'",fontSize:'.72rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'rgba(239,215,202,.6)',lineHeight:'2',textDecoration:'none',transition:'color .2s'}}
+                <a key={l} href={h} style={{fontFamily:"'Josefin Sans'",fontSize:'.68rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'rgba(239,215,202,.55)',lineHeight:'2.2',textDecoration:'none',transition:'color .2s'}}
                   onMouseEnter={e=>(e.target as HTMLElement).style.color='var(--cream)'}
-                  onMouseLeave={e=>(e.target as HTMLElement).style.color='rgba(239,215,202,.6)'}>{l}</a>
+                  onMouseLeave={e=>(e.target as HTMLElement).style.color='rgba(239,215,202,.55)'}>{l}</a>
               ))}
             </div>
-            <div style={{display:'flex',flexDirection:'column',gap:'.15rem'}}>
+            <div style={{display:'flex',flexDirection:'column',gap:0}}>
               {[['galerija','#galerija'],['recenzije','#testimonials'],['kontakt','#kontakt']].map(([l,h])=>(
-                <a key={l} href={h} style={{fontFamily:"'Josefin Sans'",fontSize:'.72rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'rgba(239,215,202,.6)',lineHeight:'2',textDecoration:'none',transition:'color .2s'}}
+                <a key={l} href={h} style={{fontFamily:"'Josefin Sans'",fontSize:'.68rem',fontWeight:600,textTransform:'uppercase',letterSpacing:'1px',color:'rgba(239,215,202,.55)',lineHeight:'2.2',textDecoration:'none',transition:'color .2s'}}
                   onMouseEnter={e=>(e.target as HTMLElement).style.color='var(--cream)'}
-                  onMouseLeave={e=>(e.target as HTMLElement).style.color='rgba(239,215,202,.6)'}>{l}</a>
+                  onMouseLeave={e=>(e.target as HTMLElement).style.color='rgba(239,215,202,.55)'}>{l}</a>
               ))}
             </div>
           </div>
+          {/* Mobile burger */}
+          <button className="md:hidden" style={{background:'none',border:'none',cursor:'pointer',display:'flex',flexDirection:'column',gap:'5px',padding:'.3rem'}} onClick={()=>setDrawerOpen(o=>!o)}>
+            <span style={{display:'block',width:'22px',height:'1px',background:'rgba(239,215,202,.8)',transition:'all .3s',transform:drawerOpen?'translateY(6px) rotate(45deg)':'none'}}/>
+            <span style={{display:'block',width:'22px',height:'1px',background:'rgba(239,215,202,.8)',transition:'all .3s',opacity:drawerOpen?0:1}}/>
+            <span style={{display:'block',width:'22px',height:'1px',background:'rgba(239,215,202,.8)',transition:'all .3s',transform:drawerOpen?'translateY(-6px) rotate(-45deg)':'none'}}/>
+          </button>
         </div>
+        {/* Mobile drawer */}
+        {drawerOpen&&(
+          <div style={{position:'fixed',inset:0,zIndex:199,background:'rgba(21,2,24,.85)',backdropFilter:'blur(8px)'}} onClick={()=>setDrawerOpen(false)}>
+            <div style={{position:'absolute',right:0,top:0,bottom:0,width:'280px',background:'#1e0428',padding:'5rem 2rem 3rem'}} onClick={e=>e.stopPropagation()}>
+              {[['O salonu','#osalonu'],['Usluge','#usluge'],['Galerija','#galerija'],['Rezervacija','#rezervacija'],['Kontakt','#kontakt']].map(([l,h])=>(
+                <a key={l} href={h} onClick={()=>setDrawerOpen(false)} style={{display:'block',padding:'.85rem 0',fontFamily:"'Josefin Sans'",fontSize:'.68rem',fontWeight:600,letterSpacing:'1px',textTransform:'uppercase',color:'rgba(239,215,202,.5)',borderBottom:'1px solid rgba(239,215,202,.06)',textDecoration:'none'}}>{l}</a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* BOTTOM CONTENT — two-column like template (66.67% left, 33.33% right) */}
         <div style={{position:'absolute',bottom:0,left:0,right:0,zIndex:2,padding:'0 5% 5% 5%',display:'grid',gridTemplateColumns:'66.667% 33.333%',alignItems:'flex-end',gap:0}}>
