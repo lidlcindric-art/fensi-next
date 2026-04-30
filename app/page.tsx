@@ -161,10 +161,10 @@ export default function FensiPage() {
       // ── HERO TEXT REVEAL ────────────────────────────
       const heroTl = gsap.timeline({ delay: .1 })
       heroTl
-        .fromTo(heroTagRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out' })
+        .fromTo(heroTagRef.current, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out' })
         .fromTo([heroWord1Ref.current, heroWord2Ref.current, heroWord3Ref.current],
-          { yPercent: 120, opacity: 0 },
-          { yPercent: 0, opacity: 1, duration: .9, ease: 'power3.out', stagger: .12 }, '-=.3')
+          { yPercent: 100 },
+          { yPercent: 0, duration: .9, ease: 'power3.out', stagger: .12 }, '-=.3')
         .fromTo(heroSubRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out' }, '-=.4')
         .fromTo(heroCtaRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out' }, '-=.4')
 
@@ -494,23 +494,23 @@ export default function FensiPage() {
 
         {/* Hero content */}
         <div className="relative px-6 md:px-16 pb-16 md:pb-24 w-full max-w-3xl" style={{ zIndex: 2 }}>
-          <div ref={heroTagRef} className="flex items-center gap-3 mb-7" style={{ opacity: 0 }}>
+          <div ref={heroTagRef} className="flex items-center gap-3 mb-7 hero-anim">
             <div style={{ width: '24px', height: '1px', background: 'var(--gold)' }} />
             <span style={{ fontSize: '.58rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--gold)' }}>frizerski salon · zagreb</span>
           </div>
           <h1 style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 300, lineHeight: .87, letterSpacing: '-2px', fontSize: 'clamp(4rem,14vw,10rem)' }}>
-            <span className="split-word"><span ref={heroWord1Ref} className="split-word-inner" style={{ opacity: 0, display: 'block' }}>Ljepota</span></span>
+            <span className="split-word"><span ref={heroWord1Ref} className="hw" style={{ display: 'block' }}>Ljepota</span></span>
             <em style={{ fontStyle: 'italic', display: 'block' }}>
-              <span className="split-word"><span ref={heroWord2Ref} className="split-word-inner" style={{ opacity: 0, display: 'block' }}>izvan</span></span>
+              <span className="split-word"><span ref={heroWord2Ref} className="hw" style={{ display: 'block' }}>izvan</span></span>
             </em>
             <span className="split-word" style={{ color: 'var(--gold)' }}>
-              <em><span ref={heroWord3Ref} className="split-word-inner" style={{ opacity: 0, display: 'block', fontStyle: 'italic' }}>granica.</span></em>
+              <em><span ref={heroWord3Ref} className="hw" style={{ display: 'block', fontStyle: 'italic' }}>granica.</span></em>
             </span>
           </h1>
-          <p ref={heroSubRef} style={{ fontSize: '.88rem', color: 'rgba(245,241,235,.5)', lineHeight: '1.9', marginTop: '1.8rem', maxWidth: '340px', opacity: 0 }}>
+          <p ref={heroSubRef} className="hero-anim" style={{ fontSize: '.88rem', color: 'rgba(245,241,235,.5)', lineHeight: '1.9', marginTop: '1.8rem', maxWidth: '340px' }}>
             Zajedno stvaramo nešto izvanredno.<br />Frizura koja govori o tebi.
           </p>
-          <div ref={heroCtaRef} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-9" style={{ opacity: 0 }}>
+          <div ref={heroCtaRef} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-9 hero-anim">
             <button className="magnetic cta-main flex items-center gap-3 px-8 py-4 rounded-full font-medium text-[.65rem] tracking-[2.5px] uppercase transition-all duration-300"
               style={{ background: 'var(--gold)', color: 'var(--black)', border: 'none' }}
               onClick={() => document.getElementById('rezervacija')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -530,12 +530,12 @@ export default function FensiPage() {
       {/* ── ABOUT ────────────────────────────────── */}
       <section id="osalonu" className="grid grid-cols-1 md:grid-cols-2" style={{ background: 'var(--cream)', color: 'var(--black)' }}>
         <div className="relative overflow-hidden" style={{ minHeight: '400px' }}>
-          <div className="grid grid-cols-2 gap-[3px] h-full" style={{ minHeight: '400px' }}>
-            <div className="overflow-hidden relative" data-clip>
-              <Image src="/photos/bob-highlights.jpg" alt="Bob" fill style={{ objectFit: 'cover', objectPosition: 'center 15%' }} data-parallax=".8" sizes="25vw" />
+          <div className="grid grid-cols-2 gap-[3px]" style={{ height: '100%', minHeight: '420px' }}>
+            <div className="overflow-hidden relative" data-clip style={{ minHeight: '380px' }}>
+              <Image src="/photos/bob-highlights.jpg" alt="Bob" fill style={{ objectFit: 'cover', objectPosition: 'center 15%' }} sizes="25vw" />
             </div>
-            <div className="overflow-hidden relative mt-10" data-clip>
-              <Image src="/photos/dark-black-waves.jpg" alt="Tamna kosa" fill style={{ objectFit: 'cover', objectPosition: 'center 20%' }} data-parallax="1.2" sizes="25vw" />
+            <div className="overflow-hidden relative" data-clip style={{ minHeight: '380px', marginTop: '3rem' }}>
+              <Image src="/photos/dark-black-waves.jpg" alt="Tamna kosa" fill style={{ objectFit: 'cover', objectPosition: 'center 20%' }} sizes="25vw" />
             </div>
           </div>
           {/* Logo badge */}
@@ -633,13 +633,9 @@ export default function FensiPage() {
             <div key={g.src} className="gal-item flex-none group" style={{ width: '260px', position: 'relative', overflow: 'hidden', aspectRatio: '3/4', flexShrink: 0 }}>
               <Image src={g.src} alt={g.name} fill style={{ objectFit: 'cover', objectPosition: 'center 15%', transition: 'transform .6s ease', transform: 'scale(1)' }} sizes="260px"
                 className="group-hover:scale-[1.06]" />
-              <div className="absolute inset-0 flex flex-col justify-end p-5 transition-all duration-300" style={{ background: 'rgba(10,8,6,0)', transition: 'background .35s' }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(10,8,6,.55)' )}
-                onMouseLeave={e => (e.currentTarget.style.background = 'rgba(10,8,6,0)' )}>
-                <div style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.1rem', color: 'var(--cream)', opacity: 0, transform: 'translateY(10px)', transition: 'all .35s' }}
-                  className="gal-name">{g.name}</div>
-                <div style={{ fontSize: '.55rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gold)', opacity: 0, transform: 'translateY(8px)', transition: 'all .35s .05s' }}
-                  className="gal-cta">dobij ovaj look →</div>
+              <div className="gal-overlay absolute inset-0 flex flex-col justify-end p-5">
+                <div className="gal-name" style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.15rem', color: 'var(--cream)', fontWeight: 500 }}>{g.name}</div>
+                <div className="gal-cta" style={{ fontSize: '.55rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gold)', marginTop: '.3rem' }}>dobij ovaj look →</div>
               </div>
             </div>
           ))}
@@ -654,8 +650,8 @@ export default function FensiPage() {
           <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
         </div>
         <div className="max-w-2xl mx-auto" data-reveal="up" data-d="1">
-          <p style={{ fontFamily: "'Cormorant Garamond'", fontStyle: 'italic', fontSize: 'clamp(1.4rem,4vw,2.1rem)', fontWeight: 300, color: 'var(--cream)', lineHeight: '1.45', letterSpacing: '-.2px', transition: 'opacity .5s' }}>
-            "{TESTI[testiIdx].q}"
+          <p style={{ fontFamily: "'Cormorant Garamond'", fontStyle: 'italic', fontSize: 'clamp(1.3rem,3.5vw,2rem)', fontWeight: 300, color: 'var(--cream)', lineHeight: '1.55', letterSpacing: '-.1px', transition: 'opacity .5s', textAlign: 'center', maxWidth: '640px', margin: '0 auto' }}>
+            &#x201E;{TESTI[testiIdx].q}&#x201C;
           </p>
           <div style={{ fontSize: '.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--gold)', marginTop: '1.5rem' }}>— {TESTI[testiIdx].a}</div>
         </div>
@@ -679,9 +675,12 @@ export default function FensiPage() {
           {[1,2,3,4,5,6,0].map(d => {
             const r = RADNO[d]; const isT = d === new Date().getDay()
             return (
-              <div key={d} className="flex justify-between items-center py-3 border-b border-t-0" style={{ borderColor: 'rgba(14,12,10,.08)', ...(d === 1 ? { borderTop: '1px solid rgba(14,12,10,.08)' } : {}) }}>
-                <span style={{ fontSize: '.75rem', letterSpacing: '1px', color: isT ? 'var(--gold)' : 'var(--muted)', fontWeight: isT ? 500 : 300 }}>{DAY_NAMES[d]}</span>
-                <span style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1rem', color: isT ? 'var(--gold)' : r ? 'var(--black)' : 'var(--sand)', fontStyle: r ? 'normal' : 'italic' }}>
+              <div key={d} className="rdn-row">
+                <span style={{ fontSize: '.78rem', letterSpacing: '1px', color: isT ? 'var(--gold)' : 'var(--muted)', fontWeight: isT ? 500 : 400, display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+                  {DAY_NAMES[d]}
+                  {isT && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)', display: 'inline-block' }} />}
+                </span>
+                <span style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.05rem', color: isT ? 'var(--gold)' : r ? 'var(--black)' : 'var(--sand)', fontStyle: r ? 'normal' : 'italic', letterSpacing: '.3px' }}>
                   {r ? r.disp : 'Zatvoreno'}
                 </span>
               </div>
@@ -829,7 +828,7 @@ export default function FensiPage() {
       </section>
 
       {/* ── FOOTER ───────────────────────────────── */}
-      <footer style={{ background: 'var(--black)', borderTop: '1px solid rgba(245,241,235,.06)', padding: '2rem 2rem' }} className="flex flex-col md:flex-row gap-4 items-center md:items-start justify-between md:px-16 text-center md:text-left">
+      <footer style={{ background: 'var(--black)', borderTop: '1px solid rgba(245,241,235,.06)', padding: '2rem 2rem' }} className="flex flex-col md:flex-row gap-3 items-center justify-between md:px-16 text-center">
         <div style={{ fontFamily: "'Cormorant Garamond'", fontStyle: 'italic', fontSize: '1.1rem', color: 'rgba(245,241,235,.4)' }}>Fensi · frizerski salon</div>
         <div style={{ fontSize: '.6rem', color: 'rgba(245,241,235,.2)', letterSpacing: '.5px', lineHeight: '1.7' }}>© 2025 Đurđica Pleić · Šenova 7, Zagreb · 091 891 7760</div>
         <div className="flex gap-5 flex-wrap justify-center">
@@ -903,10 +902,8 @@ export default function FensiPage() {
         @keyframes fabF { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-5px) } }
         .srv-scroll::-webkit-scrollbar { display:none }
         .gallery-drag::-webkit-scrollbar { display:none }
-        .group:hover img { transform: scale(1.06) !important; }
-        .group:hover .gal-name { opacity:1 !important; transform:none !important; }
-        .group:hover .gal-cta { opacity:1 !important; transform:none !important; }
-        .gal-name, .gal-cta { transition: all .35s; }
+        .srv-scroll { cursor: grab; }
+        .srv-scroll:active { cursor: grabbing; }
         [data-d="1"] { transition-delay:.12s }
         [data-d="2"] { transition-delay:.24s }
         [data-d="3"] { transition-delay:.36s }

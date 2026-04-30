@@ -124,3 +124,46 @@ html.lenis { height: auto; }
 /* Gallery drag cursor */
 .gallery-drag { cursor: grab; }
 .gallery-drag:active { cursor: grabbing; }
+
+
+/* ─── HERO INITIAL STATES ─────────────────── */
+/* .hw = hero word — initially hidden za GSAP clip reveal */
+.split-word { overflow: hidden; display: block; }
+.hw { display: block; }
+/* Fallback ako GSAP ne učita — tekst je vidljiv */
+.no-gsap .hw { transform: none !important; opacity: 1 !important; }
+.no-gsap .hero-anim { opacity: 1 !important; transform: none !important; }
+.hero-anim { opacity: 0; }
+
+/* ─── GALLERY HOVER ───────────────────────── */
+.gal-overlay { background: rgba(10,8,6,0); transition: background .4s ease; }
+.gal-item:hover .gal-overlay { background: rgba(10,8,6,.6); }
+
+.gal-name {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.gal-cta {
+  opacity: 0;
+  transform: translateY(9px);
+  transition: opacity .35s .05s ease, transform .35s .05s ease;
+}
+.gal-item:hover .gal-name { opacity: 1; transform: none; }
+.gal-item:hover .gal-cta  { opacity: 1; transform: none; }
+
+/* ─── SERVICE CARD HOVER ──────────────────── */
+.srv-card:hover img { transform: scale(1.07) !important; }
+
+/* ─── TEXT ALIGNMENT FIXES ────────────────── */
+/* Headings dosljedni */
+.section-eyebrow {
+  display: flex; align-items: center; gap: .7rem;
+  margin-bottom: 1rem;
+}
+.section-eyebrow .el { width: 16px; height: 1px; background: var(--gold); flex-shrink: 0; }
+.section-eyebrow span { font-size: .6rem; letter-spacing: 3.5px; text-transform: uppercase; }
+
+/* Radno grid row */
+.rdn-row { display: flex; justify-content: space-between; align-items: baseline; padding: .85rem 0; border-bottom: 1px solid rgba(14,12,10,.08); }
+.rdn-row:first-child { border-top: 1px solid rgba(14,12,10,.08); }
