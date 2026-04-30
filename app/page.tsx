@@ -656,7 +656,7 @@ export default function FensiPage() {
           <p style={{fontFamily:"'Inter'",fontSize:'1rem',letterSpacing:'1px',color:'rgba(239,215,202,.5)',marginBottom:'3rem'}}>kod Đurđice — odaberi datum, upiši se i čekaj potvrdu.</p>
         </div>
 
-        <div style={{display:'grid',gridTemplateColumns:'1fr',gap:'2rem'}} className="md:grid-cols-2">
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'2rem',alignItems:'start'}}>
           {/* Calendar — compact */}
           <div data-r="left" style={{background:'rgba(239,215,202,.03)',border:'1px solid rgba(239,215,202,.07)',padding:'1.2rem'}}>
             {/* Month nav */}
