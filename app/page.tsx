@@ -294,23 +294,33 @@ export default function FensiPage() {
       {/* ══ HERO — identical to SR template ════ */}
       <section style={{position:'relative',width:'100%',height:'100dvh',minHeight:'640px',overflow:'hidden',background:'var(--plum)'}}>
 
-        {/* PHOTOS — cycling slideshow, portrait orientation, right-weighted
-            Template: photo at left:11.6% → right edge, full height portrait */}
-        {['/photos/dark-black-waves.jpg','/photos/bob-highlights.jpg','/photos/straight-brown.jpg'].map((src,i)=>(
-          <div key={src} style={{
-            position:'absolute',top:0,bottom:0,right:0,left:0,zIndex:0,
-            opacity: heroPhotoIdx===i ? 1 : 0,
-            transition:'opacity 1.4s ease-in-out',
-          }}>
-            <Image src={src} alt="Fensi" fill style={{objectFit:'cover',objectPosition:'75% 15%',filter:'brightness(.62)'}} priority={i===0} sizes="100vw"/>
-          </div>
-        ))}
+        {/* woman-hero.png — exact template positioning:
+            width: 961.95px in 1254px = 76.7%, left: 146px = 11.6%
+            Full height, centered cover, no filter (PNG preserves look) */}
+        <div style={{
+          position:'absolute',
+          top:0, bottom:0,
+          left:'11.6%',         /* template: 146px / 1254px */
+          right:0,              /* extends to right edge */
+          zIndex:0,
+        }}>
+          <Image
+            src="/photos/woman-hero.png"
+            alt="Fensi Salon"
+            fill
+            style={{objectFit:'cover', objectPosition:'50% 50%'}}
+            priority
+            sizes="88vw"
+          />
+        </div>
 
-        {/* GRADIENTS — exact template pattern */}
-        {/* Bottom: rgba(21,2,24,0) 0% → rgba(21,2,24,1) 100% - covers bottom ~33% */}
-        <div style={{position:'absolute',bottom:0,left:0,right:0,height:'45%',zIndex:1,background:'linear-gradient(rgba(21,2,24,0) 0%, rgba(21,2,24,1) 100%)',pointerEvents:'none'}}/>
-        {/* Left: template has left gradient over ~33% width */}
-        <div style={{position:'absolute',top:0,left:0,bottom:0,width:'50%',zIndex:1,background:'linear-gradient(to right, rgba(21,2,24,.85) 0%, rgba(21,2,24,.5) 50%, rgba(21,2,24,0) 100%)',pointerEvents:'none'}}/>
+        {/* GRADIENTS — template exact:
+            - Bottom: transparent→solid (template: 297px of 891px ≈ 33% from bottom)
+            - Left 33%: solid→transparent (matches template sr7-shp left overlay) */}
+        <div style={{position:'absolute',bottom:0,left:0,right:0,height:'33%',zIndex:1,
+          background:'linear-gradient(rgba(21,2,24,0) 0%, rgba(21,2,24,1) 100%)',pointerEvents:'none'}}/>
+        <div style={{position:'absolute',bottom:0,left:0,right:0,height:'33%',zIndex:1,
+          background:'linear-gradient(rgba(21,2,24,0) 0%, rgba(21,2,24,1) 100%)',pointerEvents:'none'}}/>
 
         {/* FIXED NAV — template: logo left, two-col links right */}
         <div style={{
