@@ -2,40 +2,57 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 
-// ─────────────────── TYPES ───────────────────
-interface Appointment { id: string; name: string; phone: string; email: string; service: string; date: string; time: string; note: string; status: string }
-
-// ─────────────────── CONSTANTS ───────────────────
-const PHOTOS = [
-  { src: '/photos/red-waves.jpg', alt: 'Crvena kosa s valovima' },
-  { src: '/photos/blonde-waves.jpg', alt: 'Plavi valovi' },
-  { src: '/photos/dark-waves-long.jpg', alt: 'Tamna duga kosa' },
-  { src: '/photos/straight-blonde.jpg', alt: 'Ravna plava kosa' },
-  { src: '/photos/chocolate-waves.jpg', alt: 'Čokoladni valovi' },
-]
-
-const GALLERY = [
-  { src: '/photos/red-waves.jpg', name: 'Vibrantna Crvena', sub: 'Boja kose' },
-  { src: '/photos/bob-highlights.jpg', name: 'Bob s Pramenovima', sub: 'Šišanje' },
-  { src: '/photos/blonde-waves.jpg', name: 'Plavi Valovi', sub: 'Boja & valovi' },
-  { src: '/photos/dark-waves-long.jpg', name: 'Dugačka Tamna', sub: 'Valovi' },
-  { src: '/photos/dark-black-waves.jpg', name: 'Crna & Valovita', sub: 'Styling' },
-  { src: '/photos/straight-blonde.jpg', name: 'Ravna Plava', sub: 'Keratin' },
-  { src: '/photos/straight-brown.jpg', name: 'Smeđi Keratin', sub: 'Tretman' },
-  { src: '/photos/chocolate-waves.jpg', name: 'Čokoladni Valovi', sub: 'Boja & valovi' },
+/* ─── CONSTANTS ─────────────────────────────────────────────── */
+const HERO_PHOTOS = [
+  '/photos/red-waves.jpg',
+  '/photos/blonde-waves.jpg',
+  '/photos/dark-waves-long.jpg',
+  '/photos/straight-blonde.jpg',
+  '/photos/chocolate-waves.jpg',
 ]
 
 const SERVICES = [
-  { num: '01', title: 'Oblikuj', img: '/photos/bob-highlights.jpg', desc: 'Od smjelih modernih šišanja do bezvremenih klasika — svaki rez je statement.' },
-  { num: '02', title: 'Unaprijedi', img: '/photos/straight-brown.jpg', desc: 'Keratin tretmani, brazilsko ravnanje, regeneracija — svilenkasta glatkoća.' },
-  { num: '03', title: 'Osvjetli', img: '/photos/red-waves.jpg', desc: 'Vibrantne boje ili nježni pramenovi — tvoja vizija, naša strast.' },
-  { num: '04', title: 'Uzdigni', img: '/photos/dark-waves-long.jpg', desc: 'Svečane frizure, punđe, pletenice. Za tvoj najvažniji trenutak — savršeno.' },
+  {
+    title: 'Oblikuj',
+    label: 'Šišanje & Styling',
+    img: '/photos/bob-highlights.jpg',
+    desc: 'Od smjelih modernih šišanja do bezvremenih klasika — svaki rez je statement. Nije to samo šišanje, to je izjava o tebi.',
+  },
+  {
+    title: 'Unaprijedi',
+    label: 'Keratin & Ravnanje',
+    img: '/photos/straight-brown.jpg',
+    desc: 'Keratin tretmani, brazilsko ravnanje, regeneracija — transformiramo kosu iznutra prema van. Svilenkasta glatkoća koja traje tjednima.',
+  },
+  {
+    title: 'Osvjetli',
+    label: 'Boja & Pramenovi',
+    img: '/photos/red-waves.jpg',
+    desc: 'Bila to smjela vibrantna boja ili nježni prirodni pramenovi — naše usluge bojanja oživljavaju tvoju viziju. Neka kosa zasja.',
+  },
+  {
+    title: 'Uzdigni',
+    label: 'Svečane frizure',
+    img: '/photos/dark-waves-long.jpg',
+    desc: 'Za vjenčanja, mature i posebne prigode — svečana frizura koja ostaje u sjećanju. Elegantno, moderno, savršeno za tvoj dan.',
+  },
 ]
 
-const TESTI = [
-  { q: 'Došla sam nesigurna što želim, a otišla kao best version of sebe. Svaki put iznova je magic.', a: 'Marija K.' },
-  { q: 'Keratin tretman promijenio je moj život. Kosa nikad nije bila ovako sjajna i glatka.', a: 'Ivana M.' },
-  { q: 'Svečana frizura za vjenčanje bila je točno ono o čemu sam sanjala. Hvala Đurđici na talentu!', a: 'Ana T.' },
+const GALLERY = [
+  { src: '/photos/red-waves.jpg',       name: 'Vibrantna Crvena',   desc: 'Boja kose' },
+  { src: '/photos/bob-highlights.jpg',  name: 'Bob s Pramenovima',  desc: 'Šišanje' },
+  { src: '/photos/blonde-waves.jpg',    name: 'Plavi Valovi',       desc: 'Boja & valovi' },
+  { src: '/photos/dark-waves-long.jpg', name: 'Dugačka Tamna',      desc: 'Valovi' },
+  { src: '/photos/dark-black-waves.jpg',name: 'Crna & Valovita',    desc: 'Styling' },
+  { src: '/photos/straight-blonde.jpg', name: 'Ravna Plava',        desc: 'Keratin' },
+  { src: '/photos/straight-brown.jpg',  name: 'Smeđi Keratin',      desc: 'Tretman' },
+  { src: '/photos/chocolate-waves.jpg', name: 'Čokoladni Valovi',   desc: 'Boja & valovi' },
+]
+
+const TESTIMONIALS = [
+  { q: 'Došla sam nesigurna što želim, a otišla kao best version of sebe. Đurđicina pažnja i kreativnost su neusporedivi — nikad nisam više voljela svoju kosu!', name: 'Marija K.' },
+  { q: 'Keratin tretman potpuno je promijenio moju kosu. Boja je vibrantna, highlights besprijekorni — i dalje dobivam komplimente! Ima pravi talent za ono što odgovara upravo tebi.', name: 'Ivana M.' },
+  { q: 'Došla sam po svečanu frizuru za vjenčanje i Đurđica je stvorila nešto što me natjeralo da se osjećam kao kraljica. Stil je bio elegantan, savršen cijeli dan.', name: 'Ana T.' },
 ]
 
 const RADNO: Record<number, { disp: string; od: string; do: string } | null> = {
@@ -46,647 +63,595 @@ const RADNO: Record<number, { disp: string; od: string; do: string } | null> = {
   5: { disp: '9:00 – 16:00', od: '09:00', do: '15:30' },
   6: null, 0: null,
 }
-const DAY_NAMES = ['Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota']
-const MONTH_NAMES = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac']
+const DAYS = ['Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota']
+const MONTHS = ['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac']
 
-function getSlotsForDay(dow: number): string[] {
+function getSlots(dow: number) {
   const r = RADNO[dow]; if (!r) return []
-  const all: string[] = []
-  let h = +r.od.split(':')[0], m = +r.od.split(':')[1]
-  const [eh, em] = r.do.split(':').map(Number)
-  while (h < eh || (h === eh && m <= em)) {
-    all.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`)
-    m += 30; if (m >= 60) { m -= 60; h++ }
-  }
-  return all
+  const out: string[] = []; let h=+r.od.split(':')[0],m=+r.od.split(':')[1]
+  const [eh,em]=r.do.split(':').map(Number)
+  while(h<eh||(h===eh&&m<=em)){out.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);m+=30;if(m>=60){m-=60;h++}}
+  return out
 }
 
-// ─────────────────── MAIN PAGE ───────────────────
+/* ─── MAIN ─────────────────────────────────────────────────── */
 export default function FensiPage() {
-  const loaderRef = useRef<HTMLDivElement>(null)
-  const loaderInnerRef = useRef<HTMLSpanElement>(null)
+  /* refs */
+  const loaderRef    = useRef<HTMLDivElement>(null)
+  const loaderWordRef= useRef<HTMLSpanElement>(null)
   const loaderSubRef = useRef<HTMLDivElement>(null)
-  const loaderProgressRef = useRef<HTMLDivElement>(null)
-  const cursorDotRef = useRef<HTMLDivElement>(null)
-  const cursorRingRef = useRef<HTMLDivElement>(null)
-  const heroRef = useRef<HTMLElement>(null)
-  const heroWord1Ref = useRef<HTMLSpanElement>(null)
-  const heroWord2Ref = useRef<HTMLSpanElement>(null)
-  const heroWord3Ref = useRef<HTMLSpanElement>(null)
-  const heroSubRef = useRef<HTMLParagraphElement>(null)
-  const heroCtaRef = useRef<HTMLDivElement>(null)
-  const heroTagRef = useRef<HTMLDivElement>(null)
-  const galleryRef = useRef<HTMLDivElement>(null)
-  const progressRef = useRef<HTMLDivElement>(null)
+  const loaderBarRef = useRef<HTMLDivElement>(null)
+  const dotRef       = useRef<HTMLDivElement>(null)
+  const ringRef      = useRef<HTMLDivElement>(null)
+  const heroW1Ref    = useRef<HTMLSpanElement>(null)
+  const heroW2Ref    = useRef<HTMLSpanElement>(null)
+  const heroW3Ref    = useRef<HTMLSpanElement>(null)
+  const heroTagRef   = useRef<HTMLDivElement>(null)
+  const heroSubRef   = useRef<HTMLDivElement>(null)
+  const heroCtaRef   = useRef<HTMLDivElement>(null)
+  const canvasRef    = useRef<HTMLCanvasElement>(null)
+  const galRef       = useRef<HTMLDivElement>(null)
+  const progressRef  = useRef<HTMLDivElement>(null)
 
-  // Hero slideshow
-  const [slideIdx, setSlideIdx] = useState(0)
-  const [prevSlide, setPrevSlide] = useState<number | null>(null)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  /* state */
+  const [heroIdx, setHeroIdx] = useState(0)
+  const [srvIdx,  setSrvIdx]  = useState(0)
+  const [srvPrev, setSrvPrev] = useState<number|null>(null)
+  const [srvDir,  setSrvDir]  = useState(1)
+  const [testiIdx,setTestiIdx]= useState(0)
+  const [navSolid,setNavSolid]= useState(false)
+  const [drawer,  setDrawer]  = useState(false)
 
-  // Testimonials
-  const [testiIdx, setTestiIdx] = useState(0)
+  /* booking */
+  const [calY,setCalY] = useState(new Date().getFullYear())
+  const [calM,setCalM] = useState(new Date().getMonth())
+  const [selDate,setSelDate]   = useState<string|null>(null)
+  const [selTime,setSelTime]   = useState<string|null>(null)
+  const [daySlots,setDaySlots] = useState<{time:string;taken:boolean}[]>([])
+  const [slotsLoad,setSlotsLoad]=useState(false)
+  const [takenMap,setTakenMap] = useState<Record<string,string[]>>({})
+  const [form,setForm]= useState({name:'',phone:'',email:'',service:'',note:''})
+  const [submitting,setSubmitting]=useState(false)
+  const [done,setDone]=useState(false)
+  const [doneMsg,setDoneMsg]=useState('')
 
-  // Calendar
-  const [calYear, setCalYear] = useState(new Date().getFullYear())
-  const [calMonth, setCalMonth] = useState(new Date().getMonth())
-  const [selDate, setSelDate] = useState<string | null>(null)
-  const [selTime, setSelTime] = useState<string | null>(null)
-  const [takenSlots, setTakenSlots] = useState<Record<string, string[]>>({})
-  const [slots, setSlots] = useState<string[]>([])
-  const [slotsLoading, setSlotsLoading] = useState(false)
+  /* admin */
+  const [adminOpen,setAdminOpen]=useState(false)
+  const [adminPass,setAdminPass]=useState('')
+  const [adminKey, setAdminKey] =useState('')
+  const [adminAppts,setAdminAppts]=useState<any[]>([])
+  const [adminTab, setAdminTab] =useState('today')
+  const [adminErr, setAdminErr] =useState(false)
 
-  // Form
-  const [form, setForm] = useState({ name: '', phone: '', email: '', service: '', note: '' })
-  const [submitting, setSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [submitMsg, setSubmitMsg] = useState('')
-
-  // Admin
-  const [adminOpen, setAdminOpen] = useState(false)
-  const [adminPass, setAdminPass] = useState('')
-  const [adminKey, setAdminKey] = useState('')
-  const [adminAppts, setAdminAppts] = useState<Appointment[]>([])
-  const [adminTab, setAdminTab] = useState('today')
-  const [adminErr, setAdminErr] = useState(false)
-
-  // Nav
-  const [navSolid, setNavSolid] = useState(false)
-  const [drawerOpen, setDrawerOpen] = useState(false)
-
-  // ── GSAP + LENIS INIT ──────────────────────────
+  /* ── PARTICLE WAVE CANVAS ─────────────────────── */
   useEffect(() => {
-    let gsap: any, ScrollTrigger: any, Lenis: any, lenis: any
+    const canvas = canvasRef.current; if(!canvas) return
+    const ctx = canvas.getContext('2d'); if(!ctx) return
+    let W=0, H=0, raf=0
+    const particles: {x:number;y:number;r:number;vx:number;vy:number;a:number}[] = []
+    const resize = () => { W=canvas.width=canvas.offsetWidth; H=canvas.height=canvas.offsetHeight; }
+    resize(); window.addEventListener('resize', resize)
+    for(let i=0;i<80;i++) particles.push({x:Math.random()*1400,y:Math.random()*900,r:Math.random()*1.5+.3,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.2,a:Math.random()})
+    const draw = () => {
+      ctx.clearRect(0,0,W,H)
+      particles.forEach(p => {
+        p.x+=p.vx; p.y+=p.vy; p.a+=.005
+        if(p.x<0)p.x=W; if(p.x>W)p.x=0
+        if(p.y<0)p.y=H; if(p.y>H)p.y=0
+        ctx.beginPath()
+        ctx.arc(p.x,p.y,p.r,0,Math.PI*2)
+        ctx.fillStyle=`rgba(239,215,202,${.08+Math.sin(p.a)*.06})`
+        ctx.fill()
+      })
+      // connecting lines
+      for(let i=0;i<particles.length;i++) for(let j=i+1;j<particles.length;j++) {
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y
+        const dist=Math.sqrt(dx*dx+dy*dy)
+        if(dist<120){ ctx.beginPath(); ctx.strokeStyle=`rgba(239,215,202,${.04*(1-dist/120)})`; ctx.lineWidth=.5; ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke() }
+      }
+      raf=requestAnimationFrame(draw)
+    }
+    draw()
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize',resize) }
+  }, [])
 
+  /* ── GSAP + LENIS INIT ───────────────────────── */
+  useEffect(() => {
+    let lenis: any
     const init = async () => {
-      const gsapModule = await import('gsap')
-      const stModule = await import('gsap/ScrollTrigger')
-      const lenisModule = await import('@studio-freight/lenis')
-
-      gsap = gsapModule.gsap
-      ScrollTrigger = stModule.ScrollTrigger
-      Lenis = lenisModule.default
-
+      const { gsap }        = await import('gsap')
+      const { ScrollTrigger}= await import('gsap/ScrollTrigger')
+      const LenisModule     = await import('@studio-freight/lenis')
+      const Lenis = LenisModule.default
       gsap.registerPlugin(ScrollTrigger)
 
-      // ── LOADER ──────────────────────────────────────
-      const tl = gsap.timeline({
-        onComplete: () => {
-          if (loaderRef.current) {
-            gsap.to(loaderRef.current, { yPercent: -100, duration: .8, ease: 'power3.inOut', onComplete: () => { if (loaderRef.current) loaderRef.current.style.display = 'none' } })
-          }
-          initAnimations(gsap, ScrollTrigger, lenis)
-        }
-      })
+      /* LOADER */
+      const tl = gsap.timeline({ onComplete: () => {
+        gsap.to(loaderRef.current, { yPercent:-100, duration:.9, ease:'power3.inOut',
+          onComplete:()=>{ if(loaderRef.current) loaderRef.current.style.display='none' } })
+        startAnimations(gsap, ScrollTrigger)
+      }})
+      tl.to(loaderBarRef.current,  { width:'100%', duration:1.4, ease:'power2.inOut' })
+        .to(loaderWordRef.current,  { y:0, duration:.8, ease:'power3.out' }, '-=.8')
+        .to(loaderSubRef.current,   { opacity:1, y:0, duration:.5, ease:'power2.out' }, '-=.4')
+        .to({}, { duration:.5 })
 
-      tl.to(loaderProgressRef.current, { width: '100%', duration: 1.2, ease: 'power2.inOut' })
-        .to(loaderInnerRef.current, { y: 0, duration: .7, ease: 'power3.out' }, '-=.6')
-        .to(loaderSubRef.current, { opacity: 1, y: 0, duration: .5, ease: 'power2.out' }, '-=.3')
-        .to({}, { duration: .6 })
-
-      // ── LENIS SMOOTH SCROLL ──────────────────────────
-      lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.9, infinite: false })
+      /* LENIS */
+      lenis = new Lenis({ lerp:.075, wheelMultiplier:.9 })
       lenis.on('scroll', ScrollTrigger.update)
-      gsap.ticker.add((t: number) => lenis.raf(t * 1000))
+      gsap.ticker.add((t:number) => lenis.raf(t*1000))
       gsap.ticker.lagSmoothing(0)
-
-      // ── SCROLL PROGRESS ──────────────────────────────
-      lenis.on('scroll', ({ progress }: { progress: number }) => {
-        if (progressRef.current) progressRef.current.style.width = (progress * 100) + '%'
-        setNavSolid(window.scrollY > 80)
+      lenis.on('scroll', ({ progress }:{progress:number}) => {
+        if(progressRef.current) progressRef.current.style.width=(progress*100)+'%'
+        setNavSolid(window.scrollY>80)
       })
     }
 
-    const initAnimations = (gsap: any, ScrollTrigger: any, lenis: any) => {
-      // ── HERO TEXT REVEAL ────────────────────────────
-      const heroTl = gsap.timeline({ delay: .1 })
-      heroTl
-        .fromTo(heroTagRef.current, { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out' })
-        .fromTo([heroWord1Ref.current, heroWord2Ref.current, heroWord3Ref.current],
-          { yPercent: 100 },
-          { yPercent: 0, duration: .9, ease: 'power3.out', stagger: .12 }, '-=.3')
-        .fromTo(heroSubRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out' }, '-=.4')
-        .fromTo(heroCtaRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out' }, '-=.4')
+    const startAnimations = (gsap:any, ST:any) => {
+      /* hero words — clip reveal */
+      gsap.timeline({ delay:.05 })
+        .fromTo(heroTagRef.current, {opacity:0,y:18},{opacity:1,y:0,duration:.6,ease:'power2.out'})
+        .fromTo([heroW1Ref.current,heroW2Ref.current,heroW3Ref.current],
+          {yPercent:105},{yPercent:0,duration:1,ease:'power3.out',stagger:.13},'-=.35')
+        .fromTo(heroSubRef.current, {opacity:0,y:16},{opacity:1,y:0,duration:.6,ease:'power2.out'},'-=.5')
+        .fromTo(heroCtaRef.current, {opacity:0,y:16},{opacity:1,y:0,duration:.6,ease:'power2.out'},'-=.45')
 
-      // ── SECTION REVEALS ──────────────────────────────
-      document.querySelectorAll('[data-reveal]').forEach(el => {
-        const dir = el.getAttribute('data-reveal')
+      /* scroll reveals */
+      document.querySelectorAll('[data-r]').forEach(el => {
+        const dir = el.getAttribute('data-r')
+        const d = +(el.getAttribute('data-d')||0)
         gsap.fromTo(el,
-          { opacity: 0, y: dir === 'up' ? 60 : 0, x: dir === 'left' ? -50 : dir === 'right' ? 50 : 0, scale: dir === 'scale' ? .9 : 1 },
-          {
-            opacity: 1, y: 0, x: 0, scale: 1, duration: 1, ease: 'power3.out',
-            scrollTrigger: { trigger: el, start: 'top 88%', end: 'top 60%' },
-            delay: +(el.getAttribute('data-d') || 0) * .12,
-          }
-        )
+          { opacity:0, y:dir==='up'?56:0, x:dir==='left'?-48:dir==='right'?48:0, scale:dir==='scale'?.9:1 },
+          { opacity:1, y:0, x:0, scale:1, duration:1, ease:'power3.out', delay:d*.12,
+            scrollTrigger:{ trigger:el, start:'top 88%' } })
       })
 
-      // ── IMAGE CLIP-PATH REVEALS ───────────────────────
+      /* clip reveals */
       document.querySelectorAll('[data-clip]').forEach(el => {
         gsap.fromTo(el,
-          { clipPath: 'inset(0 100% 0 0)' },
-          { clipPath: 'inset(0 0% 0 0)', duration: 1.1, ease: 'power3.inOut',
-            scrollTrigger: { trigger: el, start: 'top 85%' }
-          }
-        )
+          { clipPath:'inset(0 100% 0 0)' },
+          { clipPath:'inset(0 0% 0 0)', duration:1.2, ease:'power3.inOut',
+            scrollTrigger:{ trigger:el, start:'top 85%' } })
       })
 
-      // ── ABOUT IMAGES PARALLAX ─────────────────────────
-      document.querySelectorAll('[data-parallax]').forEach(el => {
-        const speed = +(el.getAttribute('data-parallax') || .2)
-        gsap.to(el, {
-          yPercent: -15 * speed,
-          ease: 'none',
-          scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1.5 }
-        })
+      /* parallax images */
+      document.querySelectorAll('[data-par]').forEach(el => {
+        const s = +(el.getAttribute('data-par')||.3)
+        gsap.to(el, { yPercent:-12*s, ease:'none',
+          scrollTrigger:{ trigger:(el as HTMLElement).closest('section'), start:'top bottom', end:'bottom top', scrub:1.5 } })
       })
 
-      // ── SERVICES HORIZONTAL DRAG ──────────────────────
-      const srvEl = document.querySelector('.srv-scroll') as HTMLElement
-      if (srvEl) {
-        let isDown = false, startX = 0, scrollLeft = 0
-        srvEl.addEventListener('mousedown', e => { isDown = true; srvEl.style.cursor = 'grabbing'; startX = e.pageX - srvEl.offsetLeft; scrollLeft = srvEl.scrollLeft })
-        srvEl.addEventListener('mouseleave', () => { isDown = false; srvEl.style.cursor = 'grab' })
-        srvEl.addEventListener('mouseup', () => { isDown = false; srvEl.style.cursor = 'grab' })
-        srvEl.addEventListener('mousemove', e => { if (!isDown) return; e.preventDefault(); const x = e.pageX - srvEl.offsetLeft; srvEl.scrollLeft = scrollLeft - (x - startX) * 1.5 })
+      /* GALLERY drag */
+      const gal = galRef.current
+      if(gal){
+        let dn=false,sx=0,sl=0,vel=0,lx=0,raf=0
+        gal.addEventListener('mousedown',e=>{dn=true;gal.style.cursor='grabbing';sx=e.pageX;sl=gal.scrollLeft;vel=0;cancelAnimationFrame(raf)})
+        document.addEventListener('mouseup',()=>{ if(!dn)return;dn=false;gal.style.cursor='grab'
+          const mo=()=>{gal.scrollLeft+=vel;vel*=.92;if(Math.abs(vel)>.5)raf=requestAnimationFrame(mo)};mo()})
+        gal.addEventListener('mousemove',e=>{ if(!dn)return;e.preventDefault();gal.scrollLeft=sl-(e.pageX-sx);vel=lx-e.pageX;lx=e.pageX})
       }
 
-      // ── GALLERY DRAG ──────────────────────────────────
-      const galEl = galleryRef.current
-      if (galEl) {
-        let isDown = false, startX = 0, scrollLeft = 0, velocity = 0, lastX = 0, rafId = 0
-        galEl.addEventListener('mousedown', e => { isDown = true; galEl.style.cursor = 'grabbing'; startX = e.pageX; scrollLeft = galEl.scrollLeft; velocity = 0; cancelAnimationFrame(rafId) })
-        document.addEventListener('mouseup', () => {
-          if (!isDown) return; isDown = false; galEl.style.cursor = 'grab'
-          const momentum = () => { galEl.scrollLeft += velocity; velocity *= .92; if (Math.abs(velocity) > .5) rafId = requestAnimationFrame(momentum) }
-          momentum()
-        })
-        galEl.addEventListener('mousemove', e => { if (!isDown) return; e.preventDefault(); const dx = e.pageX - startX; galEl.scrollLeft = scrollLeft - dx; velocity = lastX - e.pageX; lastX = e.pageX })
+      /* services drag */
+      const srv = document.querySelector('.srv-drag') as HTMLElement
+      if(srv){
+        let dn=false,sx=0,sl=0
+        srv.addEventListener('mousedown',e=>{dn=true;srv.style.cursor='grabbing';sx=e.pageX;sl=srv.scrollLeft})
+        document.addEventListener('mouseup',()=>{dn=false;srv.style.cursor='grab'})
+        srv.addEventListener('mousemove',e=>{if(!dn)return;e.preventDefault();srv.scrollLeft=sl-(e.pageX-sx)*1.5})
       }
 
-      // ── MAGNETIC BUTTONS ──────────────────────────────
-      document.querySelectorAll('.magnetic').forEach(el => {
-        const btn = el as HTMLElement
-        btn.addEventListener('mousemove', e => {
-          const rect = btn.getBoundingClientRect()
-          const x = e.clientX - rect.left - rect.width / 2
-          const y = e.clientY - rect.top - rect.height / 2
-          gsap.to(btn, { x: x * .25, y: y * .25, duration: .4, ease: 'power2.out' })
-        })
-        btn.addEventListener('mouseleave', () => gsap.to(btn, { x: 0, y: 0, duration: .5, ease: 'elastic.out(1, .5)' }))
+      /* magnetic buttons */
+      document.querySelectorAll('.mag').forEach(el => {
+        const b=el as HTMLElement
+        b.addEventListener('mousemove',e=>{ const r=b.getBoundingClientRect(); const x=e.clientX-r.left-r.width/2; const y=e.clientY-r.top-r.height/2; gsap.to(b,{x:x*.22,y:y*.22,duration:.4,ease:'power2.out'}) })
+        b.addEventListener('mouseleave',()=>gsap.to(b,{x:0,y:0,duration:.55,ease:'elastic.out(1,.5)'}))
       })
     }
 
     init()
-
-    return () => { lenis?.destroy(); gsap?.ticker.remove(() => {}) }
+    return () => { lenis?.destroy() }
   }, [])
 
-  // ── CUSTOM CURSOR ──────────────────────────────
+  /* ── CURSOR ──────────────────────────────────── */
   useEffect(() => {
-    let cx = 0, cy = 0, rx = 0, ry = 0, raf: number
-    const dot = cursorDotRef.current
-    const ring = cursorRingRef.current
-
-    const onMove = (e: MouseEvent) => { cx = e.clientX; cy = e.clientY }
-    const lerp = (a: number, b: number, n: number) => a + (b - a) * n
-    const render = () => {
-      if (dot) { dot.style.left = cx + 'px'; dot.style.top = cy + 'px' }
-      rx = lerp(rx, cx, .1); ry = lerp(ry, cy, .1)
-      if (ring) { ring.style.left = rx + 'px'; ring.style.top = ry + 'px' }
-      raf = requestAnimationFrame(render)
+    let cx=0,cy=0,rx=0,ry=0,raf=0
+    const move=(e:MouseEvent)=>{cx=e.clientX;cy=e.clientY}
+    const render=()=>{
+      if(dotRef.current){dotRef.current.style.left=cx+'px';dotRef.current.style.top=cy+'px'}
+      rx+=(cx-rx)*.11;ry+=(cy-ry)*.11
+      if(ringRef.current){ringRef.current.style.left=rx+'px';ringRef.current.style.top=ry+'px'}
+      raf=requestAnimationFrame(render)
     }
-    const onEnter = () => document.body.classList.add('cursor-hover')
-    const onLeave = () => document.body.classList.remove('cursor-hover')
-
-    document.addEventListener('mousemove', onMove)
-    document.querySelectorAll('a,button,.magnetic,.gal-item,.srv-card').forEach(el => {
-      el.addEventListener('mouseenter', onEnter); el.addEventListener('mouseleave', onLeave)
-    })
+    const on=()=>document.body.classList.add('ch')
+    const off=()=>document.body.classList.remove('ch')
+    document.addEventListener('mousemove',move)
+    document.querySelectorAll('a,button,.mag,.gal-item').forEach(el=>{el.addEventListener('mouseenter',on);el.addEventListener('mouseleave',off)})
     render()
-    return () => { document.removeEventListener('mousemove', onMove); cancelAnimationFrame(raf) }
-  }, [])
+    return ()=>{document.removeEventListener('mousemove',move);cancelAnimationFrame(raf)}
+  },[])
 
-  // ── HERO SLIDESHOW ──────────────────────────────
-  const goSlide = useCallback((n: number) => {
-    setPrevSlide(slideIdx)
-    setSlideIdx((n + PHOTOS.length) % PHOTOS.length)
-    if (timerRef.current) clearInterval(timerRef.current)
-    timerRef.current = setInterval(() => goSlide((slideIdx + 1 + PHOTOS.length) % PHOTOS.length), 5000)
-  }, [slideIdx])
-
+  /* ── HERO SLIDESHOW ──────────────────────────── */
   useEffect(() => {
-    timerRef.current = setInterval(() => setSlideIdx(i => (i + 1) % PHOTOS.length), 5000)
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [])
+    const t=setInterval(()=>setHeroIdx(i=>(i+1)%HERO_PHOTOS.length),4500)
+    return ()=>clearInterval(t)
+  },[])
 
-  // ── TESTI AUTO-ROTATE ───────────────────────────
-  useEffect(() => {
-    const t = setInterval(() => setTestiIdx(i => (i + 1) % TESTI.length), 6000)
-    return () => clearInterval(t)
-  }, [])
+  /* ── TESTI AUTO-ROTATE ───────────────────────── */
+  useEffect(()=>{ const t=setInterval(()=>setTestiIdx(i=>(i+1)%TESTIMONIALS.length),6000);return()=>clearInterval(t)},[])
 
-  // ── CALENDAR ────────────────────────────────────
-  const getSlots = useCallback(async (d: string) => {
-    if (takenSlots[d] !== undefined) return takenSlots[d]
-    try {
-      const r = await fetch(`/api/appointments?view=slots&date=${d}`)
-      const data = await r.json()
-      const s = data.slots || []
-      setTakenSlots(prev => ({ ...prev, [d]: s }))
-      return s
-    } catch { return [] }
-  }, [takenSlots])
-
-  const handleSelectDate = async (ds: string) => {
-    setSelDate(ds); setSelTime(null); setSlotsLoading(true)
-    const [y, m, d] = ds.split('-').map(Number)
-    const dw = new Date(y, m - 1, d).getDay()
-    if (!RADNO[dw]) { setSlots([]); setSlotsLoading(false); return }
-    const taken = await getSlots(ds)
-    const now = new Date()
-    const todStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`
-    const isToday = ds === todStr
-    const nowM = now.getHours() * 60 + now.getMinutes() + 30
-    const dayS = getSlotsForDay(dw)
-    const avail = isToday ? dayS.filter(s => { const [sh, sm] = s.split(':').map(Number); return sh * 60 + sm > nowM }) : dayS
-    setSlots(avail.filter(s => !taken.includes(s)).concat(avail.filter(s => taken.includes(s)).map(s => `taken:${s}`)))
-    setSlotsLoading(false)
+  /* ── SERVICE NAV ─────────────────────────────── */
+  const goSrv=(n:number)=>{
+    const next=(n+SERVICES.length)%SERVICES.length
+    setSrvDir(n>srvIdx?1:-1)
+    setSrvPrev(srvIdx)
+    setSrvIdx(next)
+    setTimeout(()=>setSrvPrev(null),900)
   }
 
-  const calDays = () => {
-    const first = new Date(calYear, calMonth, 1)
-    const startDow = (first.getDay() + 6) % 7
-    const total = new Date(calYear, calMonth + 1, 0).getDate()
-    const today = new Date()
-    const days = []
-    for (let i = 0; i < startDow; i++) days.push({ empty: true, d: 0, ds: '' })
-    for (let d = 1; d <= total; d++) {
-      const dt = new Date(calYear, calMonth, d)
-      const past = dt < new Date(today.getFullYear(), today.getMonth(), today.getDate())
-      const isT = dt.toDateString() === today.toDateString()
-      const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
-      const dw = dt.getDay()
-      days.push({ empty: false, d, ds, past, isToday: isT, closed: !RADNO[dw], selected: ds === selDate })
+  /* ── CALENDAR ────────────────────────────────── */
+  const fetchSlots=useCallback(async(ds:string)=>{
+    if(takenMap[ds]) return takenMap[ds]
+    try{ const r=await fetch(`/api/appointments?view=slots&date=${ds}`);const d=await r.json();const s=d.slots||[];setTakenMap(p=>({...p,[ds]:s}));return s }
+    catch{ return[] }
+  },[takenMap])
+
+  const selectDate=async(ds:string)=>{
+    setSelDate(ds);setSelTime(null);setSlotsLoad(true)
+    const [y,m,d]=ds.split('-').map(Number)
+    const dw=new Date(y,m-1,d).getDay()
+    if(!RADNO[dw]){setDaySlots([]);setSlotsLoad(false);return}
+    const taken=await fetchSlots(ds)
+    const now=new Date()
+    const todStr=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`
+    const isToday=ds===todStr
+    const nowM=now.getHours()*60+now.getMinutes()+30
+    const all=getSlots(dw)
+    const avail=isToday?all.filter(s=>{const[h,mn]=s.split(':').map(Number);return h*60+mn>nowM}):all
+    setDaySlots(avail.map(t=>({time:t,taken:taken.includes(t)})))
+    setSlotsLoad(false)
+  }
+
+  const calDays=()=>{
+    const first=new Date(calY,calM,1); const startDow=(first.getDay()+6)%7
+    const total=new Date(calY,calM+1,0).getDate(); const today=new Date()
+    const out:any[]=[]
+    for(let i=0;i<startDow;i++) out.push({empty:true})
+    for(let d=1;d<=total;d++){
+      const dt=new Date(calY,calM,d)
+      const past=dt<new Date(today.getFullYear(),today.getMonth(),today.getDate())
+      const ds=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`
+      out.push({d,ds,past,isT:dt.toDateString()===today.toDateString(),closed:!RADNO[dt.getDay()],sel:ds===selDate})
     }
-    return days
+    return out
   }
 
-  // ── SUBMIT BOOKING ──────────────────────────────
-  const submitBooking = async () => {
-    if (!form.name || !form.phone || !form.service) return alert('Ispunite ime, telefon i uslugu.')
-    if (!selDate || !selTime) return alert('Odaberite datum i termin.')
+  /* ── SUBMIT ──────────────────────────────────── */
+  const submit=async()=>{
+    if(!form.name||!form.phone||!form.service)return alert('Ispunite ime, telefon i uslugu.')
+    if(!selDate||!selTime)return alert('Odaberite datum i termin.')
     setSubmitting(true)
-    try {
-      const r = await fetch('/api/appointments', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, date: selDate, time: selTime })
-      })
-      const data = await r.json()
-      if (!r.ok) throw new Error(data.error)
-      setTakenSlots(prev => ({ ...prev, [selDate]: [...(prev[selDate] || []), selTime] }))
-      const [y, m, d] = selDate.split('-').map(Number)
-      const lbl = new Date(y, m - 1, d).toLocaleDateString('hr-HR', { weekday: 'long', day: 'numeric', month: 'long' })
-      setSubmitMsg(`${form.name}, vidimo se ${lbl} u ${selTime}. ✦`)
-      setSubmitted(true)
-    } catch (e: any) { alert(e.message) }
+    try{
+      const r=await fetch('/api/appointments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...form,date:selDate,time:selTime})})
+      const data=await r.json();if(!r.ok)throw new Error(data.error)
+      setTakenMap(p=>({...p,[selDate]:[...(p[selDate]||[]),selTime]}))
+      const[y,m,d]=selDate.split('-').map(Number)
+      const lbl=new Date(y,m-1,d).toLocaleDateString('hr-HR',{weekday:'long',day:'numeric',month:'long'})
+      setDoneMsg(`${form.name}, vidimo se ${lbl} u ${selTime}.`);setDone(true)
+    }catch(e:any){alert(e.message)}
     setSubmitting(false)
   }
 
-  // ── ADMIN ────────────────────────────────────────
-  const adminAuth = async () => {
+  /* ── ADMIN ───────────────────────────────────── */
+  const adminAuth=async()=>{
     setAdminErr(false)
-    try {
-      const r = await fetch('/api/appointments', { headers: { 'x-admin-key': adminPass } })
-      if (!r.ok) throw new Error()
-      const data = await r.json()
-      setAdminAppts(data.appointments || [])
-      setAdminKey(adminPass)
-    } catch { setAdminErr(true) }
+    try{const r=await fetch('/api/appointments',{headers:{'x-admin-key':adminPass}});if(!r.ok)throw new Error();const d=await r.json();setAdminAppts(d.appointments||[]);setAdminKey(adminPass)}
+    catch{setAdminErr(true)}
   }
+  const confirmA=async(id:string)=>{ await fetch(`/api/appointments?id=${id}`,{method:'PATCH',headers:{'x-admin-key':adminKey}});setAdminAppts(p=>p.map(a=>a.id===id?{...a,status:'confirmed'}:a)) }
+  const deleteA=async(id:string,date:string,time:string)=>{ if(!confirm(`Otkazati ${date} u ${time}?`))return;await fetch(`/api/appointments?id=${id}`,{method:'DELETE',headers:{'x-admin-key':adminKey}});setAdminAppts(p=>p.filter(a=>a.id!==id)) }
 
-  const confirmAppt = async (id: string) => {
-    await fetch(`/api/appointments?id=${id}`, { method: 'PATCH', headers: { 'x-admin-key': adminKey } })
-    setAdminAppts(prev => prev.map(a => a.id === id ? { ...a, status: 'confirmed' } : a))
-  }
+  const todayStr=new Date().toISOString().split('T')[0]
+  const filtAppts=adminTab==='pending'?adminAppts.filter(a=>a.status==='pending'):adminTab==='today'?adminAppts.filter(a=>a.date===todayStr):adminTab==='upcoming'?adminAppts.filter(a=>a.date>=todayStr).slice(0,30):adminAppts
+  const pendCnt=adminAppts.filter(a=>a.status==='pending').length
 
-  const deleteAppt = async (id: string, date: string, time: string) => {
-    if (!confirm(`Otkazati ${date} u ${time}?`)) return
-    await fetch(`/api/appointments?id=${id}`, { method: 'DELETE', headers: { 'x-admin-key': adminKey } })
-    setAdminAppts(prev => prev.filter(a => a.id !== id))
-  }
+  const scrollTo=(id:string)=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'});setDrawer(false) }
 
-  const todayStr = new Date().toISOString().split('T')[0]
-  const filteredAppts = adminTab === 'pending' ? adminAppts.filter(a => a.status === 'pending')
-    : adminTab === 'today' ? adminAppts.filter(a => a.date === todayStr)
-    : adminTab === 'upcoming' ? adminAppts.filter(a => a.date >= todayStr).slice(0, 30)
-    : adminAppts
-  const pendingCount = adminAppts.filter(a => a.status === 'pending').length
-
+  /* ── RENDER ──────────────────────────────────── */
   return (
     <>
-      {/* Custom cursor */}
-      <div ref={cursorDotRef} className="cursor-dot" />
-      <div ref={cursorRingRef} className="cursor-ring" />
+      <div ref={dotRef}  className="cursor-dot" />
+      <div ref={ringRef} className="cursor-ring" />
+      <div ref={progressRef} id="sp" />
 
-      {/* Progress */}
-      <div ref={progressRef} id="progress" />
-
-      {/* ── PAGE LOADER ─────────────────────────── */}
+      {/* ═══ LOADER ══════════════════════════════ */}
       <div ref={loaderRef} className="loader">
-        <div className="loader-logo">
-          <span ref={loaderInnerRef} className="loader-logo-inner">Fensi</span>
+        <div className="loader-word">
+          <span ref={loaderWordRef} className="loader-word-inner">Fensi</span>
         </div>
-        <div ref={loaderSubRef} className="loader-sub" style={{ transform: 'translateY(10px)' }}>frizerski salon</div>
-        <div ref={loaderProgressRef} className="loader-progress" />
+        <div ref={loaderSubRef} className="loader-sub" style={{transform:'translateY(8px)'}}>frizerski salon · zagreb</div>
+        <div ref={loaderBarRef} className="loader-bar" />
       </div>
 
-      {/* ── NAV ─────────────────────────────────── */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-[200] flex items-center justify-between px-6 md:px-12 py-6 transition-all duration-500"
-        style={navSolid ? { background: 'rgba(10,8,6,.93)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(196,164,100,.1)', paddingTop: '1rem', paddingBottom: '1rem' } : {}}
-      >
-        <a href="#" className="font-['Cormorant_Garamond'] italic text-2xl font-medium tracking-wide leading-none" style={{ color: 'var(--cream)' }}>
-          Fensi
-          <small className="block not-italic font-['Jost'] text-[.48rem] tracking-[4px] uppercase mt-[.15rem] opacity-40">frizerski salon</small>
+      {/* ═══ NAV ═════════════════════════════════ */}
+      <nav className="fixed top-0 left-0 right-0 z-[200] flex items-center justify-between px-6 md:px-12 transition-all duration-500"
+        style={{padding:'1.6rem 3rem',
+          ...(navSolid?{background:'rgba(21,2,24,.94)',backdropFilter:'blur(20px)',borderBottom:'1px solid rgba(239,215,202,.08)',paddingTop:'1rem',paddingBottom:'1rem'}:{}) }}>
+        <a href="#" className="flex flex-col" style={{fontFamily:"'Josefin Sans',sans-serif"}}>
+          <span style={{fontSize:'1.1rem',fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream)'}}>Fensi</span>
+          <span style={{fontSize:'.45rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)',marginTop:'1px'}}>frizerski salon</span>
         </a>
         <ul className="hidden md:flex gap-8 list-none">
-          {['o salonu','usluge','galerija','radno','kontakt'].map(l => (
-            <li key={l}>
-              <a href={`#${l.replace(' ','')}`}
-                className="text-[.62rem] tracking-[3px] uppercase transition-colors duration-200"
-                style={{ color: 'rgba(245,241,235,.45)' }}
-                onMouseEnter={e => (e.target as HTMLElement).style.color = 'var(--gold)'}
-                onMouseLeave={e => (e.target as HTMLElement).style.color = 'rgba(245,241,235,.45)'}
-              >{l}</a>
-            </li>
+          {[['o salonu','osalonu'],['usluge','usluge'],['galerija','galerija'],['radno','radno'],['kontakt','kontakt']].map(([l,id])=>(
+            <li key={id}><button onClick={()=>scrollTo(id)} className="nav-link bg-transparent border-0">{l}</button></li>
           ))}
         </ul>
-        <button
-          className="magnetic hidden md:block text-[.62rem] tracking-[2.5px] uppercase px-5 py-2 rounded-full transition-all duration-300"
-          style={{ background: 'transparent', border: '1px solid rgba(196,164,100,.35)', color: 'var(--cream)' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--gold)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--gold)'; (e.currentTarget as HTMLElement).style.color = 'var(--black)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(196,164,100,.35)'; (e.currentTarget as HTMLElement).style.color = 'var(--cream)' }}
-          onClick={() => document.getElementById('rezervacija')?.scrollIntoView({ behavior: 'smooth' })}
-        >rezerviraj</button>
-        <button className="md:hidden flex flex-col gap-[5px] bg-transparent border-0 p-1" onClick={() => setDrawerOpen(o => !o)}>
-          <span className="block w-[22px] h-[1px] transition-all" style={{ background: 'rgba(245,241,235,.7)' }} />
-          <span className="block w-[22px] h-[1px] transition-all" style={{ background: 'rgba(245,241,235,.7)' }} />
-          <span className="block w-[22px] h-[1px] transition-all" style={{ background: 'rgba(245,241,235,.7)' }} />
+        <button onClick={()=>scrollTo('rezervacija')} className="mag btn-book hidden md:flex">
+          <span>rezerviraj</span><span style={{fontSize:'.9rem'}}>→</span>
+        </button>
+        <button className="md:hidden bg-transparent border-0 p-1 flex flex-col gap-[5px]" onClick={()=>setDrawer(o=>!o)}>
+          {[0,1,2].map(i=><span key={i} style={{display:'block',width:'22px',height:'1px',background:'var(--cream50)'}}/>)}
         </button>
       </nav>
 
       {/* Mobile drawer */}
-      {drawerOpen && (
-        <div className="fixed inset-0 z-[199]" style={{ background: 'rgba(10,8,6,.7)', backdropFilter: 'blur(8px)' }} onClick={() => setDrawerOpen(false)}>
-          <div className="absolute right-0 top-0 bottom-0 w-72 flex flex-col gap-1 pt-20 px-8" style={{ background: 'var(--dark)' }} onClick={e => e.stopPropagation()}>
-            {['o salonu','usluge','galerija','radno','rezervacija','kontakt'].map(l => (
-              <a key={l} href={`#${l.replace(' ','')}`} onClick={() => setDrawerOpen(false)}
-                className="block py-3 text-[.65rem] tracking-[3px] uppercase border-b transition-colors duration-200"
-                style={{ color: 'rgba(245,241,235,.4)', borderColor: 'rgba(245,241,235,.06)' }}>
-                {l}
-              </a>
-            ))}
-            <button className="mt-6 py-3 text-[.65rem] tracking-[2px] uppercase rounded-full font-medium" style={{ background: 'var(--gold)', color: 'var(--black)' }} onClick={() => { document.getElementById('rezervacija')?.scrollIntoView({ behavior: 'smooth' }); setDrawerOpen(false) }}>
-              Rezerviraj termin
-            </button>
-          </div>
+      {drawer&&<div className="fixed inset-0 z-[199]" style={{background:'rgba(21,2,24,.9)',backdropFilter:'blur(10px)'}} onClick={()=>setDrawer(false)}>
+        <div className="absolute right-0 top-0 h-full w-72 flex flex-col pt-20 px-8 gap-1" style={{background:'var(--bg2)'}} onClick={e=>e.stopPropagation()}>
+          {[['o salonu','osalonu'],['usluge','usluge'],['galerija','galerija'],['radno','radno'],['rezervacija','rezervacija'],['kontakt','kontakt']].map(([l,id])=>(
+            <button key={id} onClick={()=>scrollTo(id)} className="text-left py-3 border-b bg-transparent border-0 nav-link" style={{borderColor:'var(--cream10)'}}>{l}</button>
+          ))}
+          <button onClick={()=>scrollTo('rezervacija')} className="btn-wow mag mt-6 justify-center"><span>rezerviraj sada</span><span className="btn-shimmer"/><span>→</span></button>
         </div>
-      )}
+      </div>}
 
-      {/* ── HERO ─────────────────────────────────── */}
-      <section ref={heroRef} id="hero" className="relative flex items-center justify-center overflow-hidden" style={{ height: '100dvh', minHeight: '620px', background: 'var(--black)' }}>
-        {/* Background photos */}
-        {PHOTOS.map((p, i) => (
-          <div key={p.src} className="absolute inset-0 transition-opacity duration-[1400ms] ease-in-out" style={{ opacity: i === slideIdx ? 1 : 0, zIndex: 0 }}>
-            <Image src={p.src} alt={p.alt} fill style={{ objectFit: 'cover', objectPosition: 'center 20%', transform: i === slideIdx ? 'scale(1)' : 'scale(1.06)', transition: 'transform 5s ease', filter: 'brightness(.7)' }} priority={i === 0} sizes="100vw" />
+      {/* ═══ HERO ════════════════════════════════ */}
+      <section id="hero" className="relative overflow-hidden" style={{height:'100dvh',minHeight:'640px',background:'var(--bg)'}}>
+        {/* particle canvas */}
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{zIndex:1,pointerEvents:'none'}}/>
+
+        {/* background photo slideshow */}
+        {HERO_PHOTOS.map((src,i)=>(
+          <div key={src} className="absolute inset-0 transition-opacity duration-[1600ms] ease-in-out" style={{zIndex:0,opacity:i===heroIdx?1:0}}>
+            <Image src={src} alt="Fensi salon" fill style={{objectFit:'cover',objectPosition:'center 20%',filter:'brightness(.45)',transform:i===heroIdx?'scale(1)':'scale(1.06)',transition:'transform 6s ease'}} priority={i===0} sizes="100vw"/>
           </div>
         ))}
-        {/* Gradient overlay */}
-        <div className="absolute inset-0" style={{ zIndex: 1, background: 'linear-gradient(to right, rgba(10,8,6,.75) 0%, rgba(10,8,6,.25) 60%, rgba(10,8,6,.1) 100%), linear-gradient(to top, rgba(10,8,6,.88) 0%, rgba(10,8,6,.35) 45%, rgba(10,8,6,.1) 100%)' }} />
 
-        {/* Vertical side label */}
-        <div className="absolute hidden md:block" style={{ left: '2.5rem', top: '50%', transform: 'translateY(-50%) rotate(-90deg)', zIndex: 2, fontSize: '.55rem', letterSpacing: '4px', textTransform: 'uppercase', color: 'rgba(245,241,235,.25)' }}>
-          vaš salon · zagreb
+        {/* left gradient */}
+        <div className="absolute inset-0" style={{zIndex:2,background:'linear-gradient(to right, rgba(21,2,24,.9) 0%, rgba(21,2,24,.5) 55%, rgba(21,2,24,.1) 100%), linear-gradient(to top, rgba(21,2,24,.7) 0%, transparent 50%)'}}/>
+
+        {/* "the mirror" vertical label */}
+        <div className="absolute hidden md:block" style={{left:'2.8rem',top:'50%',transform:'translateY(-50%) rotate(-90deg)',zIndex:3,fontSize:'.55rem',letterSpacing:'5px',textTransform:'uppercase',color:'var(--cream20)',fontFamily:"'Josefin Sans'"}}>
+          il salotto · zagreb
         </div>
 
-        {/* Slide counter */}
-        <div className="absolute hidden md:flex flex-col items-center gap-2" style={{ right: '2.5rem', top: '50%', transform: 'translateY(-50%)', zIndex: 2 }}>
-          <div style={{ width: '1px', height: '50px', background: 'rgba(245,241,235,.12)' }} />
-          <span style={{ fontFamily: "'Cormorant Garamond'", fontSize: '.8rem', color: 'rgba(245,241,235,.35)', writingMode: 'vertical-rl' }}>
-            {String(slideIdx + 1).padStart(2,'0')} / {String(PHOTOS.length).padStart(2,'0')}
+        {/* slide counter right */}
+        <div className="absolute hidden md:flex flex-col items-center gap-3" style={{right:'2.8rem',top:'50%',transform:'translateY(-50%)',zIndex:3}}>
+          <div style={{width:'1px',height:'48px',background:'var(--cream10)'}}/>
+          <span style={{fontSize:'.7rem',color:'var(--cream20)',writingMode:'vertical-rl',letterSpacing:'2px',fontFamily:"'Josefin Sans'"}}>
+            {String(heroIdx+1).padStart(2,'0')} / {String(HERO_PHOTOS.length).padStart(2,'0')}
           </span>
-          <div style={{ width: '1px', height: '50px', background: 'rgba(245,241,235,.12)' }} />
+          <div style={{width:'1px',height:'48px',background:'var(--cream10)'}}/>
         </div>
 
-        {/* Slide dots */}
-        <div className="absolute flex gap-[6px]" style={{ bottom: '2.5rem', right: '2.5rem', zIndex: 3 }}>
-          {PHOTOS.map((_, i) => (
-            <button key={i} onClick={() => setSlideIdx(i)} style={{ width: i === slideIdx ? '20px' : '5px', height: '5px', borderRadius: i === slideIdx ? '3px' : '50%', background: i === slideIdx ? 'var(--gold)' : 'rgba(245,241,235,.25)', border: 'none', transition: 'all .3s', cursor: 'pointer', padding: 0 }} />
+        {/* slide dots */}
+        <div className="absolute flex gap-[6px]" style={{bottom:'2.5rem',right:'2.8rem',zIndex:3}}>
+          {HERO_PHOTOS.map((_,i)=>(
+            <button key={i} onClick={()=>setHeroIdx(i)} style={{width:i===heroIdx?'22px':'5px',height:'5px',borderRadius:i===heroIdx?'3px':'50%',background:i===heroIdx?'var(--cream)':'var(--cream20)',border:'none',transition:'all .3s',cursor:'pointer',padding:0}}/>
           ))}
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute flex flex-col items-center gap-2" style={{ bottom: '2rem', left: '50%', transform: 'translateX(-50%)', zIndex: 3, opacity: 0, animation: 'fadeUp .7s 1.5s forwards' }}>
-          <div style={{ width: '1px', height: '45px', background: 'rgba(245,241,235,.18)', animation: 'scrollPulse 2s ease-in-out infinite' }} />
-          <span style={{ fontSize: '.52rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(245,241,235,.28)' }}>scroll down</span>
+        {/* scroll down */}
+        <div className="absolute flex flex-col items-center gap-2" style={{bottom:'2.2rem',left:'50%',transform:'translateX(-50%)',zIndex:3,opacity:0,animation:'haFallback 0s 3s forwards'}}>
+          <div style={{width:'1px',height:'44px',background:'var(--cream20)',animation:'scPulse 2s ease-in-out infinite'}}/>
+          <span style={{fontSize:'.52rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream20)',fontFamily:"'Josefin Sans'"}}>scroll down</span>
         </div>
 
-        {/* Hero content */}
-        <div className="relative px-6 md:px-16 pb-16 md:pb-24 w-full max-w-3xl" style={{ zIndex: 2 }}>
-          <div ref={heroTagRef} className="flex items-center gap-3 mb-7 hero-anim">
-            <div style={{ width: '24px', height: '1px', background: 'var(--gold)' }} />
-            <span style={{ fontSize: '.58rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--gold)' }}>frizerski salon · zagreb</span>
+        {/* hero content — left aligned like template */}
+        <div className="absolute flex flex-col justify-end pb-24 px-8 md:px-16" style={{inset:0,zIndex:3,maxWidth:'820px'}}>
+          {/* eyebrow */}
+          <div ref={heroTagRef} className="hero-anim flex items-center gap-3 mb-6">
+            <div style={{width:'28px',height:'1px',background:'var(--cream50)'}}/>
+            <span style={{fontSize:'.6rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)',fontFamily:"'Josefin Sans'"}}>frizerski salon · zagreb</span>
           </div>
-          <h1 style={{ fontFamily: "'Cormorant Garamond'", fontWeight: 300, lineHeight: .87, letterSpacing: '-2px', fontSize: 'clamp(4rem,14vw,10rem)' }}>
-            <span className="split-word"><span ref={heroWord1Ref} className="hw" style={{ display: 'block' }}>Ljepota</span></span>
-            <em style={{ fontStyle: 'italic', display: 'block' }}>
-              <span className="split-word"><span ref={heroWord2Ref} className="hw" style={{ display: 'block' }}>izvan</span></span>
-            </em>
-            <span className="split-word" style={{ color: 'var(--gold)' }}>
-              <em><span ref={heroWord3Ref} className="hw" style={{ display: 'block', fontStyle: 'italic' }}>granica.</span></em>
-            </span>
+
+          {/* BIG HEADLINE — left aligned, Josefin Sans like template */}
+          <h1 style={{fontFamily:"'Josefin Sans',sans-serif",fontWeight:700,lineHeight:.88,letterSpacing:'-1px'}}>
+            <span className="hero-word"><span ref={heroW1Ref} className="hero-word-inner" style={{display:'block',fontSize:'clamp(3.5rem,11vw,8rem)',textTransform:'uppercase',color:'var(--cream)'}}>Ljepota</span></span>
+            <span className="hero-word"><span ref={heroW2Ref} className="hero-word-inner" style={{display:'block',fontSize:'clamp(3.5rem,11vw,8rem)',textTransform:'uppercase',color:'var(--cream)'}}>Izvan</span></span>
+            <span className="hero-word"><span ref={heroW3Ref} className="hero-word-inner" style={{display:'block',fontSize:'clamp(3.5rem,11vw,8rem)',textTransform:'uppercase',color:'var(--cream50)'}}>Granica.</span></span>
           </h1>
-          <p ref={heroSubRef} className="hero-anim" style={{ fontSize: '.88rem', color: 'rgba(245,241,235,.5)', lineHeight: '1.9', marginTop: '1.8rem', maxWidth: '340px' }}>
-            Zajedno stvaramo nešto izvanredno.<br />Frizura koja govori o tebi.
-          </p>
-          <div ref={heroCtaRef} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-9 hero-anim">
-            <button className="magnetic cta-main flex items-center gap-3 px-8 py-4 rounded-full font-medium text-[.65rem] tracking-[2.5px] uppercase transition-all duration-300"
-              style={{ background: 'var(--gold)', color: 'var(--black)', border: 'none' }}
-              onClick={() => document.getElementById('rezervacija')?.scrollIntoView({ behavior: 'smooth' })}>
-              rezerviraj danas <span style={{ fontSize: '.9rem', transition: 'transform .2s' }}>→</span>
+
+          {/* subtitle */}
+          <div ref={heroSubRef} className="hero-anim mt-6" style={{maxWidth:'360px'}}>
+            <p style={{fontSize:'.95rem',color:'var(--cream)',lineHeight:'1.85',fontWeight:400,letterSpacing:'.3px'}}>Zajedno stvaramo nešto izvanredno!</p>
+            <p style={{fontSize:'.95rem',color:'var(--cream60)',lineHeight:'1.85',fontWeight:300}}>Frizura koja je jedinstvena kao ti.</p>
+          </div>
+
+          {/* CTA */}
+          <div ref={heroCtaRef} className="hero-anim flex items-center gap-6 mt-8">
+            <button className="mag btn-wow" onClick={()=>scrollTo('rezervacija')}>
+              <span>rezerviraj</span>
+              <span className="btn-shimmer"/>
+              <span style={{fontSize:'.85rem'}}>→</span>
             </button>
-            <button className="text-[.6rem] tracking-[2.5px] uppercase transition-colors duration-200 bg-transparent border-0"
-              style={{ color: 'rgba(245,241,235,.35)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'rgba(245,241,235,.8)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(245,241,235,.35)')}
-              onClick={() => document.getElementById('galerija')?.scrollIntoView({ behavior: 'smooth' })}>
-              vidi radove ↓
+            <button onClick={()=>scrollTo('galerija')} className="nav-link bg-transparent border-0" style={{color:'var(--cream50)'}}>
+              vidi radove
             </button>
           </div>
         </div>
       </section>
 
-      {/* ── ABOUT ────────────────────────────────── */}
-      <section id="osalonu" className="grid grid-cols-1 md:grid-cols-2" style={{ background: 'var(--cream)', color: 'var(--black)' }}>
-        <div className="relative overflow-hidden" style={{ minHeight: '400px' }}>
-          <div className="grid grid-cols-2 gap-[3px]" style={{ height: '100%', minHeight: '420px' }}>
-            <div className="overflow-hidden relative" data-clip style={{ minHeight: '380px' }}>
-              <Image src="/photos/bob-highlights.jpg" alt="Bob" fill style={{ objectFit: 'cover', objectPosition: 'center 15%' }} sizes="25vw" />
+      {/* ═══ ABOUT ═══════════════════════════════ */}
+      <section id="osalonu" className="grid grid-cols-1 md:grid-cols-2" style={{background:'var(--bg)',minHeight:'600px'}}>
+        {/* photos */}
+        <div className="relative overflow-hidden" style={{minHeight:'500px'}}>
+          <div className="absolute inset-0 grid grid-cols-2 gap-[3px]">
+            <div className="relative overflow-hidden" data-clip>
+              <Image src="/photos/bob-highlights.jpg" alt="Salon" fill style={{objectFit:'cover',objectPosition:'center 15%'}} data-par=".8" sizes="25vw"/>
             </div>
-            <div className="overflow-hidden relative" data-clip style={{ minHeight: '380px', marginTop: '3rem' }}>
-              <Image src="/photos/dark-black-waves.jpg" alt="Tamna kosa" fill style={{ objectFit: 'cover', objectPosition: 'center 20%' }} sizes="25vw" />
+            <div className="relative overflow-hidden mt-12" data-clip style={{marginTop:'3rem'}}>
+              <Image src="/photos/dark-black-waves.jpg" alt="Rad" fill style={{objectFit:'cover',objectPosition:'center 20%'}} data-par="1.2" sizes="25vw"/>
             </div>
-          </div>
-          {/* Logo badge */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 py-3 px-5 text-center z-10" style={{ background: 'var(--cream)' }}>
-            <div style={{ fontFamily: "'Cormorant Garamond'", fontStyle: 'italic', fontSize: '1.8rem', fontWeight: 500, color: 'var(--black)', lineHeight: 1 }}>Fensi</div>
-            <span style={{ fontSize: '.5rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--muted)', display: 'block', marginTop: '.15rem' }}>frizerski salon</span>
           </div>
         </div>
-        <div className="flex flex-col justify-center px-8 md:px-14 py-16 md:py-24">
-          <div className="flex items-center gap-3 mb-5" data-reveal="up">
-            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
-            <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--muted)' }}>o salonu</span>
-          </div>
-          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,5vw,3.2rem)', fontWeight: 300, lineHeight: 1.0, letterSpacing: '-.5px', color: 'var(--black)', marginBottom: '1.5rem' }}>
-            Više od salona —<br /><em style={{ fontStyle: 'italic', color: 'var(--gold)', display: 'block', marginTop: '.1rem' }}>tvoje utočište.</em>
+
+        {/* text */}
+        <div className="flex flex-col justify-center px-8 md:px-14 py-16 md:py-20" style={{borderLeft:'1px solid var(--cream10)'}}>
+          <p data-r="up" style={{fontSize:'.62rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'1rem',fontFamily:"'Josefin Sans'"}}>Više od salona</p>
+          <h2 data-r="up" data-d="1" style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'clamp(2.5rem,5vw,4rem)',fontWeight:700,lineHeight:.92,textTransform:'uppercase',letterSpacing:'-1px',color:'var(--cream)',marginBottom:'1.5rem'}}>
+            Utočište<br />za stil
           </h2>
-          <div data-reveal="up" data-d="2" style={{ width: '40px', height: '1px', background: 'var(--gold)', marginBottom: '1.2rem' }} />
-          <p data-reveal="up" data-d="2" style={{ fontSize: '.9rem', color: 'var(--muted)', lineHeight: '1.95', marginBottom: '1rem', fontWeight: 300 }}>
+          <div data-r="up" data-d="2" style={{width:'40px',height:'1px',background:'var(--cream50)',marginBottom:'1.5rem'}}/>
+          <p data-r="up" data-d="2" style={{fontSize:'.95rem',color:'var(--cream60)',lineHeight:'1.9',marginBottom:'1rem',fontWeight:300}}>
             U Fensi salonu vjerujemo u moć kose da transformira, osnažuje i nadahnjuje. Od prvog trenutka dobit ćeš artizam, brigu i posvećenost koja tvoju viziju pretvara u stvarnost.
           </p>
-          <p data-reveal="up" data-d="3" style={{ fontSize: '1.05rem', color: 'var(--muted)', lineHeight: '1.95', fontStyle: 'italic', fontFamily: "'Cormorant Garamond'" }}>
-            "Ovdje svaki detalj ima značenje — jer tvoja kosa priča tvoju priču."
+          <p data-r="up" data-d="3" style={{fontSize:'.95rem',color:'var(--cream50)',lineHeight:'1.9',fontWeight:300,fontStyle:'italic'}}>
+            Ovdje svaki detalj ima značenje — jer tvoja kosa priča tvoju priču.
           </p>
-          <div className="grid grid-cols-1 gap-[1px] mt-7 border-t" style={{ borderColor: 'rgba(14,12,10,.08)' }} data-reveal="up" data-d="4">
-            {['Boja, pramenovi & balayage','Keratin tretmani & ravnanje','Valovi & trajna ondulacija','Svečane i svatovske frizure'].map(f => (
-              <div key={f} className="flex items-center gap-3 py-3 border-b text-[.82rem]" style={{ color: 'var(--ink)', borderColor: 'rgba(14,12,10,.08)' }}>
-                <div style={{ width: '14px', height: '1px', background: 'var(--gold)', flexShrink: 0 }} />
-                {f}
+          <div className="flex flex-col mt-8 gap-0" data-r="up" data-d="4">
+            {['Boja, pramenovi & balayage','Keratin tretmani & ravnanje','Valovi & trajna ondulacija','Svečane i svatovske frizure'].map(f=>(
+              <div key={f} className="flex items-center gap-3 py-3" style={{borderBottom:'1px solid var(--cream10)',fontSize:'.82rem',color:'var(--cream)',letterSpacing:'1px'}}>
+                <span style={{color:'var(--cream50)'}}>—</span> {f}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── SERVICES ─────────────────────────────── */}
-      <section id="usluge" style={{ background: 'var(--dark)', paddingTop: '5rem', paddingBottom: '3rem' }}>
-        <div className="px-6 md:px-16 mb-10 text-center">
-          <div className="flex items-center gap-3 mb-5 justify-center" data-reveal="up">
-            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
-            <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.6)' }}>usluge</span>
-            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
+      {/* ═══ SERVICES — full-screen slider like template ═════ */}
+      <section id="usluge" className="relative overflow-hidden" style={{height:'100vh',minHeight:'600px',background:'var(--bg)'}}>
+        {/* slides */}
+        {SERVICES.map((s,i)=>(
+          <div key={s.title} className={`srv-slide${i===srvIdx?' active':''}`}>
+            <Image src={s.img} alt={s.title} fill style={{objectFit:'cover',objectPosition:'center 20%',filter:'brightness(.38)'}} sizes="100vw"/>
+            {/* left dark gradient */}
+            <div className="absolute inset-0" style={{background:'linear-gradient(to right, rgba(21,2,24,.88) 0%, rgba(21,2,24,.45) 60%, rgba(21,2,24,.05) 100%)'}}/>
+
+            {/* text content */}
+            <div className="absolute flex flex-col justify-center px-8 md:px-20" style={{inset:0,maxWidth:'700px'}}>
+              <p style={{fontSize:'.62rem',letterSpacing:'5px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'1.2rem',fontFamily:"'Josefin Sans'"}}>Usluge</p>
+              <h2 style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'clamp(4rem,10vw,7.5rem)',fontWeight:700,lineHeight:.88,textTransform:'uppercase',letterSpacing:'-1px',color:'var(--cream)',marginBottom:'1rem'}}>
+                {s.title}
+              </h2>
+              <p style={{fontSize:'1rem',color:'var(--cream60)',lineHeight:'1.85',maxWidth:'420px',fontWeight:300}}>{s.desc}</p>
+              <button onClick={()=>scrollTo('rezervacija')} className="mag btn-book mt-8" style={{width:'fit-content'}}>
+                <span>rezerviraj danas</span><span style={{fontSize:'.9rem'}}>→</span>
+              </button>
+            </div>
           </div>
-          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.5rem,7vw,5rem)', fontWeight: 300, letterSpacing: '-.5px', color: 'var(--cream)', lineHeight: .95 }}>
-            Kosa kao<br /><em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>forma umjetnosti</em>
-          </h2>
-          <p data-reveal="up" data-d="2" style={{ fontSize: '.85rem', color: 'rgba(245,241,235,.4)', marginTop: '1.2rem', lineHeight: '1.85', maxWidth: '380px', margin: '1.2rem auto 0' }}>
-            Naše usluge osmišljene su da pretvore tvoju kosu u remek-djelo.
-          </p>
+        ))}
+
+        {/* prev/next like template */}
+        <div className="absolute flex items-center justify-between px-6 md:px-12" style={{bottom:'2.5rem',left:0,right:0,zIndex:10}}>
+          <button onClick={()=>goSrv(srvIdx-1)} className="btn-book mag" style={{fontSize:'.62rem',padding:'.6rem 1.2rem'}}><span>prev</span></button>
+          {/* service name dots */}
+          <div className="flex gap-2">
+            {SERVICES.map((_,i)=>(
+              <button key={i} onClick={()=>goSrv(i)} style={{width:i===srvIdx?'32px':'6px',height:'6px',borderRadius:i===srvIdx?'3px':'50%',background:i===srvIdx?'var(--cream)':'var(--cream20)',border:'none',transition:'all .4s',cursor:'pointer',padding:0}}/>
+            ))}
+          </div>
+          <button onClick={()=>goSrv(srvIdx+1)} className="btn-book mag" style={{fontSize:'.62rem',padding:'.6rem 1.2rem'}}><span>next</span></button>
         </div>
-        <div className="srv-scroll flex gap-[2px] overflow-x-auto px-6 md:px-16 pb-6" style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', cursor: 'grab' }}>
-          {SERVICES.map(s => (
-            <div key={s.num} className="srv-card flex-none" style={{ width: '300px', scrollSnapAlign: 'start', background: 'var(--dark2)', flexShrink: 0 }}>
-              <div className="relative overflow-hidden" style={{ height: '280px' }}>
-                <Image src={s.img} alt={s.title} fill style={{ objectFit: 'cover', objectPosition: 'center 20%', transition: 'transform .7s ease' }} sizes="300px" />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,12,10,.65) 0%, transparent 55%)' }} />
-                <div className="absolute bottom-0 left-0 right-0 p-5 z-10">
-                  <div style={{ fontSize: '.58rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'rgba(245,241,235,.4)', marginBottom: '.3rem' }}>usluge · {s.num}</div>
-                  <div style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.6rem', fontWeight: 500, color: 'var(--cream)' }}>{s.title}</div>
-                </div>
-              </div>
-              <div className="p-5">
-                <p style={{ fontSize: '.8rem', color: 'rgba(245,241,235,.42)', lineHeight: '1.7' }}>{s.desc}</p>
-                <button className="flex items-center gap-2 mt-4 text-[.62rem] tracking-[2px] uppercase bg-transparent border-0 transition-all duration-200"
-                  style={{ color: 'var(--gold)' }}
-                  onClick={() => document.getElementById('rezervacija')?.scrollIntoView({ behavior: 'smooth' })}>
-                  rezerviraj danas →
-                </button>
+
+        {/* slide counter */}
+        <div className="absolute" style={{top:'2.5rem',right:'3rem',zIndex:10,fontSize:'.65rem',letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream50)'}}>
+          {String(srvIdx+1).padStart(2,'0')} / {String(SERVICES.length).padStart(2,'0')}
+        </div>
+
+        {/* service label strip right */}
+        <div className="absolute flex flex-col gap-6 items-end" style={{right:'2.5rem',top:'50%',transform:'translateY(-50%)',zIndex:10}}>
+          {SERVICES.map((s,i)=>(
+            <button key={s.title} onClick={()=>goSrv(i)} className="nav-link bg-transparent border-0" style={{writingMode:'vertical-rl',fontSize:'.55rem',letterSpacing:'3px',opacity:i===srvIdx?1:.25,transition:'opacity .3s'}}>
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ GALLERY — horizontal scroll with "get this look" ═ */}
+      <section id="galerija" style={{background:'var(--bg2)',paddingTop:'5rem',paddingBottom:'3rem'}}>
+        <div className="px-8 md:px-16 mb-10">
+          <p data-r="up" style={{fontSize:'.62rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'1rem'}}>Naši radovi</p>
+          <div className="flex items-end justify-between flex-wrap gap-4">
+            <h2 data-r="up" data-d="1" style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'clamp(2rem,6vw,4rem)',fontWeight:700,textTransform:'uppercase',letterSpacing:'-1px',color:'var(--cream)',lineHeight:.92}}>
+              Inspiriraj se<br /><span style={{color:'var(--cream50)'}}>našim radovima.</span>
+            </h2>
+            <p data-r="up" data-d="2" style={{fontSize:'.9rem',color:'var(--cream50)',maxWidth:'300px',lineHeight:'1.8',fontWeight:300}}>
+              Istraži portfolio transformacija. Svaki stil odražava artizam i individualnost.
+            </p>
+          </div>
+        </div>
+
+        {/* horizontal scroll gallery */}
+        <div ref={galRef} className="flex gap-[3px] overflow-x-auto pb-2 select-none" style={{scrollbarWidth:'none' as any,cursor:'grab',WebkitOverflowScrolling:'touch'} as any}>
+          {GALLERY.map((g,i)=>(
+            <div key={g.src} className="gal-item flex-none relative overflow-hidden" style={{width:'clamp(220px,22vw,320px)',aspectRatio:'3/4',flexShrink:0}}>
+              <Image src={g.src} alt={g.name} fill style={{objectFit:'cover',objectPosition:'center 15%',transition:'transform .6s ease'}} sizes="320px" className="gal-img"/>
+              <div className="gal-item-overlay">
+                <div className="gal-item-name">{g.name}</div>
+                <div className="gal-item-price">{g.desc}</div>
+                <div className="gal-item-cta">get this look</div>
               </div>
             </div>
           ))}
         </div>
-        <div className="px-6 md:px-16 pt-6 flex justify-center">
-          <button className="magnetic btn-wow flex items-center gap-3 px-10 py-[1.1rem] rounded-full text-[.68rem] tracking-[3px] uppercase font-medium"
-            style={{ background: 'var(--gold)', color: 'var(--black)', border: 'none', position: 'relative', overflow: 'hidden' }}
-            onClick={() => document.getElementById('rezervacija')?.scrollIntoView({ behavior: 'smooth' })}>
-            <span style={{ position: 'relative', zIndex: 1 }}>rezerviraj sada</span>
-            <span className="btn-shimmer" />
-            <span style={{ fontSize: '.95rem', position: 'relative', zIndex: 1 }}>→</span>
-          </button>
+
+        {/* gallery nav */}
+        <div className="flex items-center gap-4 px-8 md:px-16 mt-6">
+          <button className="btn-book mag" style={{padding:'.55rem 1.1rem',fontSize:'.6rem'}}
+            onClick={()=>galRef.current&&(galRef.current.scrollLeft-=300)}><span>←</span></button>
+          <button className="btn-book mag" style={{padding:'.55rem 1.1rem',fontSize:'.6rem'}}
+            onClick={()=>galRef.current&&(galRef.current.scrollLeft+=300)}><span>→</span></button>
         </div>
       </section>
 
-      {/* ── GALLERY ──────────────────────────────── */}
-      <section id="galerija" style={{ background: 'var(--dark2)', paddingTop: '5rem', paddingBottom: '3rem' }}>
-        <div className="px-6 md:px-16 mb-10 text-center">
-          <div className="flex items-center gap-3 mb-5 justify-center" data-reveal="up">
-            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
-            <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.6)' }}>galerija radova</span>
-            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
-          </div>
-          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,6vw,4rem)', fontWeight: 300, letterSpacing: '-.3px', color: 'var(--cream)' }}>
-            Inspiriraj se <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>našim radovima.</em>
+      {/* ═══ TESTIMONIALS ════════════════════════ */}
+      <section style={{background:'var(--bg)',padding:'6rem 2rem',position:'relative',overflow:'hidden'}}>
+        {/* bg image faded */}
+        <div className="absolute inset-0" style={{zIndex:0}}>
+          <Image src="/photos/chocolate-waves.jpg" alt="" fill style={{objectFit:'cover',objectPosition:'center',filter:'brightness(.12)'}} sizes="100vw"/>
+        </div>
+        <div className="relative max-w-3xl mx-auto text-center" style={{zIndex:1}}>
+          <p data-r="up" style={{fontSize:'.62rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'1.5rem'}}>Što kažu klientice</p>
+          <h2 data-r="up" data-d="1" style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'clamp(2rem,5vw,3rem)',fontWeight:700,textTransform:'uppercase',letterSpacing:'-1px',color:'var(--cream)',marginBottom:'1rem',lineHeight:.95}}>
+            Povjerenje<br /><span style={{color:'var(--cream50)'}}>počinje ovdje.</span>
           </h2>
-          <p data-reveal="up" data-d="2" style={{ fontSize: '.82rem', color: 'rgba(245,241,235,.4)', marginTop: '.8rem', lineHeight: '1.85', maxWidth: '360px', margin: '.8rem auto 0' }}>
-            Svaki stil odražava artizam, preciznost i individualnost.
+          <div style={{width:'40px',height:'1px',background:'var(--cream20)',margin:'2rem auto'}}/>
+          <p data-r="up" data-d="2" style={{fontSize:'clamp(1rem,2.5vw,1.2rem)',color:'var(--cream60)',lineHeight:'1.7',fontWeight:300,fontStyle:'italic',letterSpacing:'.2px',marginBottom:'1.5rem'}}>
+            "{TESTIMONIALS[testiIdx].q}"
           </p>
-        </div>
-        <div ref={galleryRef} className="gallery-drag flex gap-[3px] overflow-x-auto pb-3 select-none" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-          {GALLERY.map((g, i) => (
-            <div key={g.src} className="gal-item flex-none group" style={{ width: '260px', position: 'relative', overflow: 'hidden', aspectRatio: '3/4', flexShrink: 0 }}>
-              <Image src={g.src} alt={g.name} fill style={{ objectFit: 'cover', objectPosition: 'center 15%', transition: 'transform .6s ease', transform: 'scale(1)' }} sizes="260px"
-                className="group-hover:scale-[1.06]" />
-              <div className="gal-overlay absolute inset-0 flex flex-col justify-end p-5">
-                <div className="gal-name" style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.15rem', color: 'var(--cream)', fontWeight: 500 }}>{g.name}</div>
-                <div className="gal-cta" style={{ fontSize: '.55rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--gold)', marginTop: '.3rem' }}>dobij ovaj look →</div>
-              </div>
-            </div>
-          ))}
+          <p style={{fontSize:'.75rem',letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream50)'}}>— {TESTIMONIALS[testiIdx].name}</p>
+          {/* counter */}
+          <p style={{fontSize:'.6rem',color:'var(--cream20)',marginTop:'.5rem',letterSpacing:'2px'}}>{testiIdx+1} od {TESTIMONIALS.length}</p>
+          {/* dots */}
+          <div className="flex justify-center gap-2 mt-5">
+            {TESTIMONIALS.map((_,i)=>(
+              <button key={i} onClick={()=>setTestiIdx(i)} style={{width:i===testiIdx?'22px':'5px',height:'5px',borderRadius:i===testiIdx?'3px':'50%',background:i===testiIdx?'var(--cream)':'var(--cream20)',border:'none',transition:'all .3s',cursor:'pointer',padding:0}}/>
+            ))}
+          </div>
+          {/* prev/next */}
+          <div className="flex justify-center gap-4 mt-6">
+            <button className="btn-book" style={{padding:'.5rem 1rem',fontSize:'.6rem'}} onClick={()=>setTestiIdx(i=>(i-1+TESTIMONIALS.length)%TESTIMONIALS.length)}><span>prev</span></button>
+            <button className="btn-book" style={{padding:'.5rem 1rem',fontSize:'.6rem'}} onClick={()=>setTestiIdx(i=>(i+1)%TESTIMONIALS.length)}><span>next</span></button>
+          </div>
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ─────────────────────────── */}
-      <section style={{ background: 'var(--black)', padding: '6rem 1.5rem', textAlign: 'center' }}>
-        <div className="flex items-center justify-center gap-3 mb-6" data-reveal="up">
-          <div style={{ width: '28px', height: '1px', background: 'var(--gold)' }} />
-          <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.6)' }}>što kažu klientice</span>
-          <div style={{ width: '28px', height: '1px', background: 'var(--gold)' }} />
-        </div>
-        <div className="max-w-2xl mx-auto" data-reveal="up" data-d="1">
-          <p style={{ fontFamily: "'Cormorant Garamond'", fontStyle: 'italic', fontSize: 'clamp(1.3rem,3.5vw,2rem)', fontWeight: 300, color: 'var(--cream)', lineHeight: '1.55', letterSpacing: '-.1px', transition: 'opacity .5s', textAlign: 'center', maxWidth: '640px', margin: '0 auto' }}>
-            &#x201E;{TESTI[testiIdx].q}&#x201C;
-          </p>
-          <div style={{ fontSize: '.65rem', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--gold)', marginTop: '1.5rem' }}>— {TESTI[testiIdx].a}</div>
-        </div>
-        <div className="flex justify-center gap-2 mt-8">
-          {TESTI.map((_, i) => (
-            <button key={i} onClick={() => setTestiIdx(i)} style={{ width: i === testiIdx ? '20px' : '5px', height: '5px', borderRadius: i === testiIdx ? '3px' : '50%', background: i === testiIdx ? 'var(--gold)' : 'rgba(245,241,235,.2)', border: 'none', transition: 'all .3s', cursor: 'pointer', padding: 0 }} />
-          ))}
-        </div>
-      </section>
-
-      {/* ── RADNO VRIJEME ────────────────────────── */}
-      <section id="radno" style={{ background: 'var(--cream)', color: 'var(--black)', padding: '5rem 2rem' }} className="md:px-16">
-        <div className="flex items-center gap-3 mb-4" data-reveal="up">
-          <div style={{ width: '16px', height: '1px', background: 'var(--gold)' }} />
-          <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--muted)' }}>radno vrijeme</span>
-        </div>
-        <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2rem,5vw,2.8rem)', fontWeight: 400, letterSpacing: '-.3px', color: 'var(--black)', marginBottom: '2rem' }}>
-          Kad smo <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>tu za tebe.</em>
+      {/* ═══ RADNO VRIJEME ═══════════════════════ */}
+      <section id="radno" style={{background:'var(--bg2)',padding:'5rem 2rem'}} className="md:px-16">
+        <p data-r="up" style={{fontSize:'.62rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'1rem'}}>Radno vrijeme</p>
+        <h2 data-r="up" data-d="1" style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'clamp(2rem,5vw,3.5rem)',fontWeight:700,textTransform:'uppercase',letterSpacing:'-1px',color:'var(--cream)',marginBottom:'2.5rem',lineHeight:.92}}>
+          Kad smo<br /><span style={{color:'var(--cream50)'}}>tu za tebe.</span>
         </h2>
-        <div className="max-w-md" data-reveal="up" data-d="2">
-          {[1,2,3,4,5,6,0].map(d => {
-            const r = RADNO[d]; const isT = d === new Date().getDay()
+        <div className="max-w-md" data-r="up" data-d="2">
+          {[1,2,3,4,5,6,0].map(d=>{
+            const r=RADNO[d]; const isT=d===new Date().getDay()
             return (
-              <div key={d} className="rdn-row">
-                <span style={{ fontSize: '.78rem', letterSpacing: '1px', color: isT ? 'var(--gold)' : 'var(--muted)', fontWeight: isT ? 500 : 400, display: 'flex', alignItems: 'center', gap: '.5rem' }}>
-                  {DAY_NAMES[d]}
-                  {isT && <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--gold)', display: 'inline-block' }} />}
+              <div key={d} className="flex justify-between items-center py-4" style={{borderBottom:'1px solid var(--cream10)',...(d===1?{borderTop:'1px solid var(--cream10)'}:{})}}>
+                <span style={{fontSize:'.78rem',letterSpacing:'2px',textTransform:'uppercase',color:isT?'var(--cream)':'var(--cream50)',fontWeight:isT?600:300,display:'flex',alignItems:'center',gap:'.5rem'}}>
+                  {DAYS[d]}{isT&&<span style={{width:'5px',height:'5px',borderRadius:'50%',background:'var(--cream)',display:'inline-block'}}/>}
                 </span>
-                <span style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.05rem', color: isT ? 'var(--gold)' : r ? 'var(--black)' : 'var(--sand)', fontStyle: r ? 'normal' : 'italic', letterSpacing: '.3px' }}>
-                  {r ? r.disp : 'Zatvoreno'}
+                <span style={{fontSize:'.9rem',color:isT?'var(--cream)':r?'var(--cream60)':'var(--cream20)',letterSpacing:'1px',fontStyle:r?'normal':'italic',fontWeight:r?400:300}}>
+                  {r?r.disp:'Zatvoreno'}
                 </span>
               </div>
             )
@@ -694,48 +659,42 @@ export default function FensiPage() {
         </div>
       </section>
 
-      {/* ── REZERVACIJA ──────────────────────────── */}
-      <section id="rezervacija" style={{ background: 'var(--dark)', padding: '5rem 2rem' }} className="md:px-16">
-        <div className="flex items-center gap-3 mb-5 justify-center" data-reveal="up">
-          <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
-          <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'rgba(196,164,100,.5)' }}>online rezervacija</span>
-          <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
-        </div>
-        <h2 data-reveal="up" data-d="1" className="text-center" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,5vw,3.5rem)', fontWeight: 300, letterSpacing: '-.5px', color: 'var(--cream)', marginBottom: '.6rem' }}>
-          Rezerviraj <em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>termin</em><br />kod Đurđice.
+      {/* ═══ REZERVACIJA ═════════════════════════ */}
+      <section id="rezervacija" style={{background:'var(--bg)',padding:'5rem 2rem'}} className="md:px-16">
+        <p data-r="up" style={{fontSize:'.62rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'1rem'}}>Online rezervacija</p>
+        <h2 data-r="up" data-d="1" style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'clamp(2rem,5vw,3.5rem)',fontWeight:700,textTransform:'uppercase',letterSpacing:'-1px',color:'var(--cream)',marginBottom:'.5rem',lineHeight:.92}}>
+          Rezerviraj<br /><span style={{color:'var(--cream50)'}}>termin danas.</span>
         </h2>
-        <p data-reveal="up" data-d="2" className="text-center" style={{ fontSize: '.85rem', color: 'rgba(245,241,235,.4)', marginBottom: '2.5rem', lineHeight: '1.85', maxWidth: '360px', margin: '0 auto 2.5rem' }}>Odaberi datum i slobodan termin — čekamo te.</p>
+        <p data-r="up" data-d="2" style={{fontSize:'.9rem',color:'var(--cream50)',marginBottom:'3rem',lineHeight:'1.8',fontWeight:300}}>Odaberi datum i slobodan termin — čekamo te.</p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Calendar */}
-          <div data-reveal="left" style={{ background: 'var(--dark2)', padding: '1.6rem', border: '1px solid rgba(196,164,100,.08)' }}>
+          {/* calendar */}
+          <div data-r="left" style={{background:'var(--bg2)',padding:'1.8rem',border:'1px solid var(--cream10)'}}>
             <div className="flex items-center justify-between mb-4">
-              <button onClick={() => { setCalMonth(m => { if(m===0){setCalYear(y=>y-1);return 11}return m-1 }) }} style={{ background: 'none', border: '1px solid rgba(245,241,235,.1)', color: 'rgba(245,241,235,.4)', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', fontSize: '.82rem' }}>‹</button>
-              <span style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.1rem', color: 'var(--cream)' }}>{MONTH_NAMES[calMonth]} {calYear}</span>
-              <button onClick={() => { setCalMonth(m => { if(m===11){setCalYear(y=>y+1);return 0}return m+1 }) }} style={{ background: 'none', border: '1px solid rgba(245,241,235,.1)', color: 'rgba(245,241,235,.4)', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', fontSize: '.82rem' }}>›</button>
+              <button onClick={()=>setCalM(m=>{if(m===0){setCalY(y=>y-1);return 11}return m-1})} style={{background:'none',border:'1px solid var(--cream10)',color:'var(--cream50)',width:'28px',height:'28px',borderRadius:'50%',cursor:'pointer',fontSize:'.8rem'}}>‹</button>
+              <span style={{fontSize:'.85rem',letterSpacing:'2px',textTransform:'uppercase',color:'var(--cream)',fontFamily:"'Josefin Sans'"}}>{MONTHS[calM]} {calY}</span>
+              <button onClick={()=>setCalM(m=>{if(m===11){setCalY(y=>y+1);return 0}return m+1})} style={{background:'none',border:'1px solid var(--cream10)',color:'var(--cream50)',width:'28px',height:'28px',borderRadius:'50%',cursor:'pointer',fontSize:'.8rem'}}>›</button>
             </div>
             <div className="grid grid-cols-7 gap-[2px] mb-1">
-              {['Pon','Uto','Sri','Čet','Pet','Sub','Ned'].map(d => <div key={d} style={{ textAlign: 'center', fontSize: '.58rem', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'rgba(245,241,235,.22)', padding: '.3rem 0' }}>{d}</div>)}
+              {['Pon','Uto','Sri','Čet','Pet','Sub','Ned'].map(d=><div key={d} style={{textAlign:'center',fontSize:'.55rem',letterSpacing:'2px',textTransform:'uppercase',color:'var(--cream20)',padding:'.3rem 0'}}>{d}</div>)}
             </div>
             <div className="grid grid-cols-7 gap-[2px]">
-              {calDays().map((day, i) => (
-                <div key={i} onClick={() => !day.empty && !day.past && !day.closed && handleSelectDate(day.ds)}
-                  className={`cal-day ${day.empty?'empty':''} ${day.past?'past':''} ${day.closed&&!day.empty&&!day.past?'closed':''} ${day.isToday?'today':''} ${day.selected?'selected':''}`}>
-                  {day.empty ? '' : day.d}
+              {calDays().map((day,i)=>(
+                <div key={i} onClick={()=>!day.empty&&!day.past&&!day.closed&&selectDate(day.ds)}
+                  className={`cd${day.empty?' empty':''}${day.past?' past':''}${day.closed&&!day.empty&&!day.past?' closed':''}${day.isT?' today':''}${day.sel?' sel':''}`}>
+                  {day.empty?'':day.d}
                 </div>
               ))}
             </div>
-            {selDate && (
-              <div style={{ marginTop: '1.2rem' }}>
-                <div style={{ fontSize: '.58rem', letterSpacing: '2.5px', textTransform: 'uppercase', color: 'rgba(245,241,235,.3)', marginBottom: '.6rem' }}>slobodni termini</div>
-                {slotsLoading ? <p style={{ fontSize: '.72rem', color: 'rgba(245,241,235,.3)' }}>Učitavam...</p> : (
+            {selDate&&(
+              <div style={{marginTop:'1.5rem',borderTop:'1px solid var(--cream10)',paddingTop:'1.2rem'}}>
+                <p style={{fontSize:'.58rem',letterSpacing:'2.5px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.7rem'}}>slobodni termini</p>
+                {slotsLoad?<p style={{fontSize:'.75rem',color:'var(--cream50)'}}>Učitavam...</p>:(
                   <div className="grid grid-cols-4 gap-[3px]">
-                    {slots.length === 0 ? <p style={{ fontSize: '.72rem', color: 'rgba(245,241,235,.3)', gridColumn: '1/-1', textAlign: 'center' }}>Nema slobodnih termina</p> :
-                      slots.map(s => {
-                        const isTaken = s.startsWith('taken:')
-                        const time = isTaken ? s.replace('taken:','') : s
-                        return <button key={s} onClick={() => !isTaken && setSelTime(time)} className={`slot-btn ${isTaken?'taken':''} ${selTime===time?'selected':''}`}>{time}</button>
-                      })
+                    {daySlots.length===0?<p style={{fontSize:'.72rem',color:'var(--cream20)',gridColumn:'1/-1',textAlign:'center'}}>Nema slobodnih termina</p>:
+                      daySlots.map(s=>(
+                        <button key={s.time} onClick={()=>!s.taken&&setSelTime(s.time)} className={`slot${s.taken?' tk':''}${selTime===s.time?' sl':''}`}>{s.time}</button>
+                      ))
                     }
                   </div>
                 )}
@@ -743,50 +702,42 @@ export default function FensiPage() {
             )}
           </div>
 
-          {/* Form */}
-          <div data-reveal="right">
-            {!submitted ? (
-              <div style={{ background: 'var(--dark2)', padding: '1.8rem', border: '1px solid rgba(196,164,100,.08)' }}>
-                <h3 style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.3rem', color: 'var(--cream)', marginBottom: '.25rem' }}>Rezerviraj termin</h3>
-                <p style={{ fontSize: '.75rem', color: 'rgba(245,241,235,.35)', marginBottom: '1.5rem' }}>Ispuni podatke i potvrdi.</p>
-                {selDate && selTime && <div style={{ background: 'rgba(196,164,100,.08)', border: '1px solid rgba(196,164,100,.2)', color: 'var(--gold)', fontSize: '.72rem', padding: '.4rem .8rem', marginBottom: '.9rem' }}>✦ {selDate} u {selTime}</div>}
-                {[
-                  { label: 'Ime i prezime *', key: 'name', type: 'text', ph: 'Ana Horvat' },
-                  { label: 'Telefon *', key: 'phone', type: 'tel', ph: '091 234 5678' },
-                  { label: 'Email', key: 'email', type: 'email', ph: 'ana@email.com' },
-                ].map(f => (
-                  <div key={f.key} style={{ marginBottom: '.85rem' }}>
-                    <label style={{ display: 'block', fontSize: '.58rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(245,241,235,.3)', marginBottom: '.4rem' }}>{f.label}</label>
-                    <input type={f.type} placeholder={f.ph} value={(form as any)[f.key]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
-                      style={{ width: '100%', background: 'rgba(245,241,235,.04)', border: '1px solid rgba(245,241,235,.08)', padding: '.78rem 1rem', color: 'var(--cream)', fontSize: '.85rem', outline: 'none' }}
-                      onFocus={e => e.target.style.borderColor = 'rgba(196,164,100,.4)'} onBlur={e => e.target.style.borderColor = 'rgba(245,241,235,.08)'} />
+          {/* form */}
+          <div data-r="right">
+            {!done?(
+              <div style={{background:'var(--bg2)',padding:'1.8rem',border:'1px solid var(--cream10)'}}>
+                <h3 style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'1rem',fontWeight:600,letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream)',marginBottom:'.3rem'}}>Rezerviraj termin</h3>
+                <p style={{fontSize:'.78rem',color:'var(--cream50)',marginBottom:'1.5rem',fontWeight:300}}>Ispuni podatke i potvrdi.</p>
+                {selDate&&selTime&&<div style={{background:'var(--cream10)',borderLeft:'2px solid var(--cream50)',padding:'.5rem .8rem',fontSize:'.72rem',color:'var(--cream)',marginBottom:'1rem',letterSpacing:'1px'}}>{selDate} · {selTime}</div>}
+                {[{label:'Ime i prezime *',k:'name',t:'text',ph:'Ana Horvat'},{label:'Telefon *',k:'phone',t:'tel',ph:'091 234 5678'},{label:'Email',k:'email',t:'email',ph:'ana@email.com'}].map(f=>(
+                  <div key={f.k} style={{marginBottom:'.8rem'}}>
+                    <label style={{display:'block',fontSize:'.58rem',letterSpacing:'2.5px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.4rem'}}>{f.label}</label>
+                    <input type={f.t} placeholder={f.ph} value={(form as any)[f.k]} onChange={e=>setForm(p=>({...p,[f.k]:e.target.value}))} className="fi"/>
                   </div>
                 ))}
-                <div style={{ marginBottom: '.85rem' }}>
-                  <label style={{ display: 'block', fontSize: '.58rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(245,241,235,.3)', marginBottom: '.4rem' }}>Usluga *</label>
-                  <select value={form.service} onChange={e => setForm(p => ({ ...p, service: e.target.value }))}
-                    style={{ width: '100%', background: 'rgba(245,241,235,.04)', border: '1px solid rgba(245,241,235,.08)', padding: '.78rem 1rem', color: 'var(--cream)', fontSize: '.85rem', outline: 'none', appearance: 'none' }}>
-                    <option value="">— Odaberi uslugu —</option>
-                    {['Šišanje & feniranje','Bojanje kose (cijela boja)','Osvježavanje korijena','Pramenovi / Balayage','Trajna ondulacija','Keratin tretman','Ravnanje kose','Svečana / svatovska frizura','Konzultacija'].map(o => <option key={o}>{o}</option>)}
+                <div style={{marginBottom:'.8rem'}}>
+                  <label style={{display:'block',fontSize:'.58rem',letterSpacing:'2.5px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.4rem'}}>Usluga *</label>
+                  <select value={form.service} onChange={e=>setForm(p=>({...p,service:e.target.value}))} className="fi" style={{appearance:'none'}}>
+                    <option value="">— Odaberi —</option>
+                    {['Šišanje & feniranje','Bojanje kose','Osvježavanje korijena','Pramenovi / Balayage','Trajna ondulacija','Keratin tretman','Ravnanje kose','Svečana frizura','Konzultacija'].map(o=><option key={o}>{o}</option>)}
                   </select>
                 </div>
-                <div style={{ marginBottom: '.85rem' }}>
-                  <label style={{ display: 'block', fontSize: '.58rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(245,241,235,.3)', marginBottom: '.4rem' }}>Napomena</label>
-                  <textarea placeholder="Posebni zahtjevi..." rows={3} value={form.note} onChange={e => setForm(p => ({ ...p, note: e.target.value }))}
-                    style={{ width: '100%', background: 'rgba(245,241,235,.04)', border: '1px solid rgba(245,241,235,.08)', padding: '.78rem 1rem', color: 'var(--cream)', fontSize: '.85rem', outline: 'none', resize: 'none' }} />
+                <div style={{marginBottom:'.8rem'}}>
+                  <label style={{display:'block',fontSize:'.58rem',letterSpacing:'2.5px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.4rem'}}>Napomena</label>
+                  <textarea placeholder="Posebni zahtjevi..." rows={3} value={form.note} onChange={e=>setForm(p=>({...p,note:e.target.value}))} className="fi" style={{resize:'none'}}/>
                 </div>
-                <button onClick={submitBooking} disabled={submitting} style={{ width: '100%', background: 'var(--gold)', color: 'var(--black)', border: 'none', padding: '.88rem', fontSize: '.65rem', letterSpacing: '2.5px', textTransform: 'uppercase', fontWeight: 500, cursor: 'pointer', opacity: submitting ? .4 : 1 }}>
-                  {submitting ? 'Rezerviram...' : 'Potvrdi rezervaciju →'}
+                <button onClick={submit} disabled={submitting} className="btn-wow mag" style={{width:'100%',justifyContent:'center',opacity:submitting?.4:1}}>
+                  <span>{submitting?'Rezerviram...':'Potvrdi rezervaciju'}</span>
+                  {!submitting&&<><span className="btn-shimmer"/><span>→</span></>}
                 </button>
               </div>
-            ) : (
-              <div style={{ background: 'var(--dark2)', padding: '3rem 2rem', border: '1px solid rgba(196,164,100,.08)', textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', color: 'var(--gold)', marginBottom: '.8rem' }}>✦</div>
-                <h4 style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.5rem', color: 'var(--cream)', marginBottom: '.5rem' }}>Rezervacija zaprimljena!</h4>
-                <p style={{ fontSize: '.82rem', color: 'rgba(245,241,235,.4)' }}>{submitMsg}</p>
-                <button onClick={() => { setSubmitted(false); setSelDate(null); setSelTime(null); setForm({ name:'',phone:'',email:'',service:'',note:'' }) }}
-                  style={{ marginTop: '1.5rem', background: 'none', border: '1px solid rgba(245,241,235,.15)', color: 'rgba(245,241,235,.5)', padding: '.6rem 1.5rem', fontSize: '.62rem', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer' }}>
-                  Nova rezervacija
+            ):(
+              <div style={{background:'var(--bg2)',padding:'3rem 2rem',border:'1px solid var(--cream10)',textAlign:'center'}}>
+                <div style={{fontSize:'2rem',color:'var(--cream)',marginBottom:'1rem'}}>✦</div>
+                <h4 style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'1rem',fontWeight:700,letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream)',marginBottom:'.5rem'}}>Rezervacija zaprimljena</h4>
+                <p style={{fontSize:'.85rem',color:'var(--cream50)',lineHeight:'1.8',fontWeight:300}}>{doneMsg}</p>
+                <button onClick={()=>{setDone(false);setSelDate(null);setSelTime(null);setForm({name:'',phone:'',email:'',service:'',note:''})}} className="btn-book mt-8" style={{margin:'2rem auto 0',display:'flex',width:'fit-content'}}>
+                  <span>nova rezervacija</span>
                 </button>
               </div>
             )}
@@ -794,103 +745,112 @@ export default function FensiPage() {
         </div>
       </section>
 
-      {/* ── CONTACT ──────────────────────────────── */}
-      <section id="kontakt" className="grid grid-cols-1 md:grid-cols-2" style={{ background: 'var(--cream)', color: 'var(--black)' }}>
-        <div className="flex flex-col justify-center px-8 md:px-14 py-16">
-          <div className="flex items-center gap-3 mb-5" data-reveal="up">
-            <div style={{ width: '20px', height: '1px', background: 'var(--gold)' }} />
-            <span style={{ fontSize: '.6rem', letterSpacing: '3.5px', textTransform: 'uppercase', color: 'var(--muted)' }}>kontakt</span>
+      {/* ═══ CONTACT / FOOTER ════════════════════ */}
+      <section id="kontakt" className="relative overflow-hidden" style={{background:'var(--bg)',minHeight:'500px'}}>
+        {/* bg photo faded */}
+        <div className="absolute inset-0" style={{zIndex:0}}>
+          <Image src="/photos/salon-interior.jpg" alt="Salon" fill style={{objectFit:'cover',objectPosition:'center',filter:'brightness(.15)'}} sizes="100vw"/>
+        </div>
+        <div className="absolute inset-0" style={{zIndex:1,background:'linear-gradient(to right, rgba(21,2,24,.95) 0%, rgba(21,2,24,.7) 60%, rgba(21,2,24,.5) 100%)'}}/>
+
+        <div className="relative grid grid-cols-1 md:grid-cols-2 gap-16 px-8 md:px-16 py-20" style={{zIndex:2}}>
+          <div>
+            <p data-r="up" style={{fontSize:'.62rem',letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'1rem'}}>Pronađi nas</p>
+            <h2 data-r="up" data-d="1" style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'clamp(2rem,5vw,3.5rem)',fontWeight:700,textTransform:'uppercase',letterSpacing:'-1px',color:'var(--cream)',marginBottom:'1rem',lineHeight:.92}}>
+              Tvoj savršen<br /><span style={{color:'var(--cream50)'}}>look čeka te.</span>
+            </h2>
+            <p data-r="up" data-d="2" style={{fontSize:'.9rem',color:'var(--cream50)',lineHeight:'1.8',marginBottom:'2rem',fontWeight:300}}>
+              Iskusi stručnu njegu, kreativni styling i salon gdje se osjećaš kao kod kuće.
+            </p>
+            <button onClick={()=>scrollTo('rezervacija')} className="mag btn-wow" data-r="up" data-d="3">
+              <span>rezerviraj sada</span><span className="btn-shimmer"/><span>→</span>
+            </button>
           </div>
-          <h2 data-reveal="up" data-d="1" style={{ fontFamily: "'Cormorant Garamond'", fontSize: 'clamp(2.2rem,5vw,3.2rem)', fontWeight: 300, letterSpacing: '-.5px', color: 'var(--black)', marginBottom: '1.8rem', lineHeight: 1.05 }}>
-            Tvoj savršen<br /><em style={{ fontStyle: 'italic', color: 'var(--gold)' }}>look čeka te.</em>
-          </h2>
-          <div className="flex flex-col gap-4" data-reveal="up" data-d="2">
-            {[
-              { ic: '📍', lbl: 'adresa', val: 'Šenova 7, 10000 Zagreb', href: undefined },
-              { ic: '📞', lbl: 'telefon', val: '091 891 7760', href: 'tel:+385918917760' },
-              { ic: '✉️', lbl: 'email', val: 'Durdica.pleic@gmail.com', href: 'mailto:Durdica.pleic@gmail.com' },
-              { ic: '📘', lbl: 'facebook', val: 'Frizerski salon Fensi', href: 'https://www.facebook.com/people/Frizerski-salon-Fensi/100063899474535/' },
-            ].map(c => (
-              <div key={c.lbl} className="flex gap-4 items-start">
-                <div style={{ width: '36px', height: '36px', border: '1px solid rgba(14,12,10,.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.9rem', flexShrink: 0 }}>{c.ic}</div>
-                <div>
-                  <div style={{ fontSize: '.58rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.15rem' }}>{c.lbl}</div>
-                  {c.href ? <a href={c.href} target={c.href.startsWith('http')?'_blank':undefined} style={{ fontSize: '.88rem', color: 'var(--black)', transition: 'color .2s' }} onMouseEnter={e=>(e.target as HTMLElement).style.color='var(--gold)'} onMouseLeave={e=>(e.target as HTMLElement).style.color='var(--black)'}>{c.val}</a>
-                    : <div style={{ fontSize: '.88rem', color: 'var(--black)' }}>{c.val}</div>}
-                </div>
+          <div className="flex flex-col gap-5" data-r="right">
+            {/* address */}
+            <div>
+              <p style={{fontSize:'.55rem',letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.4rem'}}>address</p>
+              <p style={{fontSize:'.9rem',color:'var(--cream)',lineHeight:'1.6',fontWeight:300}}>Šenova 7<br/>10000 Zagreb</p>
+            </div>
+            <div>
+              <p style={{fontSize:'.55rem',letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.4rem'}}>phone</p>
+              <a href="tel:+385918917760" style={{fontSize:'.9rem',color:'var(--cream)',fontWeight:300,transition:'color .2s'}} onMouseEnter={e=>(e.currentTarget.style.color='var(--cream60)')} onMouseLeave={e=>(e.currentTarget.style.color='var(--cream)')}>091 891 7760</a>
+            </div>
+            <div>
+              <p style={{fontSize:'.55rem',letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.4rem'}}>email</p>
+              <a href="mailto:Durdica.pleic@gmail.com" style={{fontSize:'.9rem',color:'var(--cream)',fontWeight:300,transition:'color .2s'}} onMouseEnter={e=>(e.currentTarget.style.color='var(--cream60)')} onMouseLeave={e=>(e.currentTarget.style.color='var(--cream)')}>Durdica.pleic@gmail.com</a>
+            </div>
+            <div>
+              <p style={{fontSize:'.55rem',letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.5rem'}}>Business Hours</p>
+              <div style={{fontSize:'.85rem',color:'var(--cream)',fontWeight:300,lineHeight:'1.8'}}>
+                <span style={{color:'var(--cream50)'}}>Pon / Sri / Pet:</span> 9:00 – 16:00<br/>
+                <span style={{color:'var(--cream50)'}}>Uto / Čet:</span> 12:00 – 19:00<br/>
+                <span style={{color:'var(--cream50)'}}>Sub / Ned:</span> Zatvoreno
               </div>
+            </div>
+            <div>
+              <p style={{fontSize:'.55rem',letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.5rem'}}>follow us</p>
+              <a href="https://www.facebook.com/people/Frizerski-salon-Fensi/100063899474535/" target="_blank" style={{fontSize:'.85rem',color:'var(--cream)',fontWeight:300,transition:'color .2s'}} onMouseEnter={e=>(e.currentTarget.style.color='var(--cream60)')} onMouseLeave={e=>(e.currentTarget.style.color='var(--cream)')}>Facebook →</a>
+            </div>
+          </div>
+        </div>
+
+        {/* footer strip */}
+        <div className="relative border-t flex flex-col md:flex-row items-center justify-between gap-3 px-8 md:px-16 py-5" style={{zIndex:2,borderColor:'var(--cream10)'}}>
+          <span style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'.85rem',fontWeight:700,letterSpacing:'4px',textTransform:'uppercase',color:'var(--cream50)'}}>Fensi</span>
+          <span style={{fontSize:'.6rem',color:'var(--cream20)',letterSpacing:'1px'}}>© 2025 Đurđica Pleić · Šenova 7, Zagreb · 091 891 7760</span>
+          <div className="flex gap-5">
+            {[['usluge','usluge'],['galerija','galerija'],['rezervacija','rezervacija']].map(([l,id])=>(
+              <button key={id} onClick={()=>scrollTo(id)} className="nav-link bg-transparent border-0" style={{fontSize:'.58rem'}}>{l}</button>
             ))}
           </div>
-          <button className="magnetic cta-main flex items-center gap-3 mt-8 px-8 py-4 text-[.65rem] tracking-[2.5px] uppercase font-medium transition-all"
-            data-reveal="up" data-d="3"
-            style={{ background: 'var(--black)', color: 'var(--cream)', border: 'none', width: 'fit-content' }}
-            onClick={() => document.getElementById('rezervacija')?.scrollIntoView({ behavior: 'smooth' })}>
-            rezerviraj termin →
-          </button>
-        </div>
-        <div className="relative overflow-hidden" style={{ minHeight: '350px' }}>
-          <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=15.9819%2C45.7751%2C15.9859%2C45.7771&layer=mapnik&marker=45.7761%2C15.9839" style={{ width: '100%', height: '100%', border: 'none', filter: 'grayscale(1) contrast(.85) sepia(.1)', minHeight: '350px' }} loading="lazy" />
         </div>
       </section>
 
-      {/* ── FOOTER ───────────────────────────────── */}
-      <footer style={{ background: 'var(--black)', borderTop: '1px solid rgba(245,241,235,.06)', padding: '2rem 2rem' }} className="flex flex-col md:flex-row gap-3 items-center justify-between md:px-16 text-center">
-        <div style={{ fontFamily: "'Cormorant Garamond'", fontStyle: 'italic', fontSize: '1.1rem', color: 'rgba(245,241,235,.4)' }}>Fensi · frizerski salon</div>
-        <div style={{ fontSize: '.6rem', color: 'rgba(245,241,235,.2)', letterSpacing: '.5px', lineHeight: '1.7' }}>© 2025 Đurđica Pleić · Šenova 7, Zagreb · 091 891 7760</div>
-        <div className="flex gap-5 flex-wrap justify-center">
-          {['#usluge','#galerija','#rezervacija','#kontakt'].map(h => (
-            <a key={h} href={h} style={{ fontSize: '.58rem', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(245,241,235,.25)', transition: 'color .2s' }}
-              onMouseEnter={e=>(e.target as HTMLElement).style.color='var(--gold)'}
-              onMouseLeave={e=>(e.target as HTMLElement).style.color='rgba(245,241,235,.25)'}>
-              {h.replace('#','')}
-            </a>
-          ))}
-        </div>
-      </footer>
+      {/* FAB + Admin trigger */}
+      <a href="tel:+385918917760" style={{position:'fixed',bottom:'max(1.5rem,env(safe-area-inset-bottom,1.5rem))',right:'1.5rem',background:'var(--cream)',color:'var(--bg)',width:'50px',height:'50px',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.1rem',zIndex:90,boxShadow:'0 8px 24px rgba(239,215,202,.2)',animation:'fabF 3s ease-in-out infinite'}}>📞</a>
+      <button onClick={()=>setAdminOpen(true)} style={{position:'fixed',bottom:'max(1.5rem,env(safe-area-inset-bottom,1.5rem))',left:'1.5rem',background:'rgba(21,2,24,.8)',color:'var(--cream20)',width:'36px',height:'36px',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'.75rem',zIndex:90,border:'1px solid var(--cream10)',backdropFilter:'blur(10px)'}}>⚙️</button>
 
-      <a href="tel:+385918917760" style={{ position: 'fixed', bottom: 'max(1.5rem, env(safe-area-inset-bottom, 1.5rem))', right: '1.5rem', background: 'var(--gold)', color: 'var(--black)', width: '50px', height: '50px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', zIndex: 90, boxShadow: '0 8px 24px rgba(196,164,100,.3)', textDecoration: 'none', animation: 'fabF 3s ease-in-out infinite' }}>📞</a>
-      <button onClick={() => setAdminOpen(true)} style={{ position: 'fixed', bottom: 'max(1.5rem, env(safe-area-inset-bottom, 1.5rem))', left: '1.5rem', background: 'rgba(10,8,6,.7)', color: 'rgba(245,241,235,.3)', width: '38px', height: '38px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.8rem', zIndex: 90, border: '1px solid rgba(245,241,235,.06)', backdropFilter: 'blur(10px)' }}>⚙️</button>
-
-      {/* ── ADMIN PANEL ──────────────────────────── */}
-      {adminOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 500, background: 'rgba(10,8,6,.8)', backdropFilter: 'blur(16px)', overflowY: 'auto' }} onClick={e => e.target === e.currentTarget && setAdminOpen(false)}>
-          <div style={{ maxWidth: '760px', margin: '1.5rem auto', background: 'var(--dark)', border: '1px solid rgba(196,164,100,.08)' }}>
-            <div style={{ background: 'var(--dark2)', padding: '1.3rem 1.6rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(245,241,235,.06)' }}>
-              <h2 style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.25rem', fontWeight: 400, color: 'var(--cream)' }}>✦ Admin · Fensi</h2>
-              <button onClick={() => setAdminOpen(false)} style={{ background: 'none', border: '1px solid rgba(245,241,235,.1)', color: 'rgba(245,241,235,.4)', width: '30px', height: '30px', borderRadius: '50%', cursor: 'pointer' }}>✕</button>
+      {/* ═══ ADMIN PANEL ═════════════════════════ */}
+      {adminOpen&&(
+        <div style={{position:'fixed',inset:0,zIndex:500,background:'rgba(21,2,24,.85)',backdropFilter:'blur(16px)',overflowY:'auto'}} onClick={e=>e.target===e.currentTarget&&setAdminOpen(false)}>
+          <div style={{maxWidth:'760px',margin:'1.5rem auto',background:'var(--bg2)',border:'1px solid var(--cream10)'}}>
+            <div style={{background:'var(--bg3)',padding:'1.2rem 1.6rem',display:'flex',alignItems:'center',justifyContent:'space-between',borderBottom:'1px solid var(--cream10)'}}>
+              <span style={{fontFamily:"'Josefin Sans',sans-serif",fontSize:'.85rem',fontWeight:600,letterSpacing:'3px',textTransform:'uppercase',color:'var(--cream)'}}>Admin · Fensi</span>
+              <button onClick={()=>setAdminOpen(false)} style={{background:'none',border:'1px solid var(--cream10)',color:'var(--cream50)',width:'28px',height:'28px',borderRadius:'50%',cursor:'pointer'}}>✕</button>
             </div>
-            <div style={{ padding: '1.5rem 1.6rem' }}>
-              {!adminKey ? (
+            <div style={{padding:'1.5rem 1.6rem'}}>
+              {!adminKey?(
                 <div>
-                  <h3 style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.1rem', color: 'var(--cream)', marginBottom: '1rem' }}>Prijava vlasnice</h3>
-                  <input type="password" placeholder="••••••••" value={adminPass} onChange={e => setAdminPass(e.target.value)} onKeyDown={e => e.key === 'Enter' && adminAuth()}
-                    style={{ width: '100%', background: 'rgba(245,241,235,.04)', border: '1px solid rgba(245,241,235,.08)', padding: '.78rem 1rem', color: 'var(--cream)', fontSize: '.85rem', outline: 'none', marginBottom: '.6rem' }} />
-                  {adminErr && <p style={{ color: '#c87878', fontSize: '.72rem', marginBottom: '.5rem' }}>Pogrešna lozinka</p>}
-                  <button onClick={adminAuth} style={{ width: '100%', background: 'var(--gold)', color: 'var(--black)', border: 'none', padding: '.78rem', fontSize: '.65rem', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 500, cursor: 'pointer' }}>Prijavi se</button>
+                  <label style={{display:'block',fontSize:'.6rem',letterSpacing:'2.5px',textTransform:'uppercase',color:'var(--cream50)',marginBottom:'.5rem'}}>Lozinka</label>
+                  <input type="password" placeholder="••••••••" value={adminPass} onChange={e=>setAdminPass(e.target.value)} onKeyDown={e=>e.key==='Enter'&&adminAuth()} className="fi" style={{marginBottom:'.6rem'}}/>
+                  {adminErr&&<p style={{color:'#c87878',fontSize:'.72rem',marginBottom:'.5rem'}}>Pogrešna lozinka</p>}
+                  <button onClick={adminAuth} className="btn-wow" style={{width:'100%',justifyContent:'center'}}><span>Prijavi se</span></button>
                 </div>
-              ) : (
+              ):(
                 <div>
-                  <div style={{ display: 'flex', borderBottom: '1px solid rgba(245,241,235,.06)', marginBottom: '1rem' }}>
-                    {['pending','today','upcoming','all'].map((t,i) => (
-                      <button key={t} onClick={() => setAdminTab(t)} style={{ background: 'none', border: 'none', borderBottom: `2px solid ${adminTab===t?'var(--gold)':'transparent'}`, padding: '.6rem .9rem', fontSize: '.62rem', letterSpacing: '1.5px', textTransform: 'uppercase', color: adminTab===t?'var(--gold)':'rgba(245,241,235,.3)', cursor: 'pointer' }}>
-                        {['čekanje','danas','nadolazeći','svi'][i]}{t==='pending'&&pendingCount>0&&<span style={{ background: 'var(--gold)', color: 'var(--black)', borderRadius: '50%', width: '16px', height: '16px', fontSize: '.58rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginLeft: '.35rem', verticalAlign: 'middle' }}>{pendingCount}</span>}
+                  <div style={{display:'flex',borderBottom:'1px solid var(--cream10)',marginBottom:'1rem'}}>
+                    {['pending','today','upcoming','all'].map((t,i)=>(
+                      <button key={t} onClick={()=>setAdminTab(t)} style={{background:'none',border:'none',borderBottom:`2px solid ${adminTab===t?'var(--cream)':'transparent'}`,padding:'.6rem .9rem',fontSize:'.6rem',letterSpacing:'2px',textTransform:'uppercase',color:adminTab===t?'var(--cream)':'var(--cream50)',cursor:'pointer'}}>
+                        {['čekanje','danas','nadolazeći','svi'][i]}
+                        {t==='pending'&&pendCnt>0&&<span style={{background:'var(--cream)',color:'var(--bg)',borderRadius:'50%',width:'15px',height:'15px',fontSize:'.55rem',fontWeight:700,display:'inline-flex',alignItems:'center',justifyContent:'center',marginLeft:'.3rem'}}>{pendCnt}</span>}
                       </button>
                     ))}
                   </div>
-                  {filteredAppts.length === 0 ? <div style={{ textAlign: 'center', padding: '2rem', color: 'rgba(245,241,235,.25)', fontFamily: "'Cormorant Garamond'", fontStyle: 'italic' }}>Nema termina</div> :
-                    filteredAppts.map(a => (
-                      <div key={a.id} style={{ background: 'var(--dark2)', border: `1px solid ${a.status==='pending'?'rgba(196,164,100,.2)':'rgba(245,241,235,.05)'}`, borderLeft: a.status==='pending'?'2px solid var(--gold)':'1px solid rgba(245,241,235,.05)', padding: '1rem 1.2rem', marginBottom: '.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                  {filtAppts.length===0?<p style={{textAlign:'center',padding:'2rem',color:'var(--cream50)',fontSize:'.85rem',fontStyle:'italic'}}>Nema termina</p>:
+                    filtAppts.map(a=>(
+                      <div key={a.id} style={{background:'var(--bg3)',borderLeft:a.status==='pending'?'2px solid var(--cream50)':'none',border:'1px solid var(--cream10)',padding:'1rem 1.2rem',marginBottom:'.5rem',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'1rem'}}>
                         <div>
-                          <div style={{ fontSize: '.85rem', color: 'var(--cream)', marginBottom: '.12rem' }}>{a.name} <span style={{ fontSize: '.58rem', letterSpacing: '1px', textTransform: 'uppercase', padding: '.12rem .45rem', background: a.status==='pending'?'rgba(196,164,100,.1)':'rgba(245,241,235,.05)', color: a.status==='pending'?'var(--gold)':'rgba(245,241,235,.3)' }}>{a.status==='pending'?'čeka':'ok'}</span></div>
-                          <div style={{ fontSize: '.7rem', color: 'rgba(245,241,235,.35)' }}>📞 {a.phone}{a.email?` · ${a.email}`:''}</div>
-                          <div style={{ fontSize: '.68rem', background: 'rgba(196,164,100,.08)', color: 'var(--gold)', padding: '.12rem .5rem', display: 'inline-block', marginTop: '.22rem' }}>{a.service}</div>
-                          {a.note && <div style={{ fontSize: '.65rem', color: 'rgba(245,241,235,.3)', marginTop: '.2rem' }}>💬 {a.note}</div>}
+                          <div style={{fontSize:'.85rem',color:'var(--cream)',marginBottom:'.12rem'}}>{a.name} <span style={{fontSize:'.58rem',letterSpacing:'1px',padding:'.1rem .4rem',background:a.status==='pending'?'var(--cream10)':'transparent',color:a.status==='pending'?'var(--cream60)':'var(--cream20)'}}>{a.status==='pending'?'čeka':'ok'}</span></div>
+                          <div style={{fontSize:'.7rem',color:'var(--cream50)',fontWeight:300}}>📞 {a.phone}{a.email?` · ${a.email}`:''}</div>
+                          <div style={{fontSize:'.68rem',color:'var(--cream60)',marginTop:'.2rem',letterSpacing:'1px'}}>{a.service}</div>
+                          {a.note&&<div style={{fontSize:'.65rem',color:'var(--cream20)',marginTop:'.2rem'}}>💬 {a.note}</div>}
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{ fontFamily: "'Cormorant Garamond'", fontSize: '1.05rem', color: 'var(--cream)' }}>{a.time}</div>
-                          <div style={{ fontSize: '.65rem', color: 'rgba(245,241,235,.25)' }}>{a.date}</div>
-                          {a.status==='pending'&&<button onClick={() => confirmAppt(a.id)} style={{ background: 'none', border: '1px solid rgba(196,164,100,.25)', color: 'var(--gold)', padding: '.25rem .5rem', fontSize: '.62rem', cursor: 'pointer', display: 'block', marginTop: '.22rem' }}>✓ Potvrdi</button>}
-                          <button onClick={() => deleteAppt(a.id, a.date, a.time)} style={{ background: 'none', border: '1px solid rgba(245,241,235,.1)', color: 'rgba(245,241,235,.3)', padding: '.25rem .5rem', fontSize: '.62rem', cursor: 'pointer', display: 'block', marginTop: '.22rem' }}>✕ Odbij</button>
+                        <div style={{textAlign:'right',flexShrink:0}}>
+                          <div style={{fontSize:'.9rem',color:'var(--cream)',letterSpacing:'1px'}}>{a.time}</div>
+                          <div style={{fontSize:'.62rem',color:'var(--cream50)'}}>{a.date}</div>
+                          {a.status==='pending'&&<button onClick={()=>confirmA(a.id)} style={{background:'none',border:'1px solid var(--cream20)',color:'var(--cream60)',padding:'.22rem .5rem',fontSize:'.6rem',cursor:'pointer',display:'block',marginTop:'.2rem',letterSpacing:'1px'}}>✓ potvrdi</button>}
+                          <button onClick={()=>deleteA(a.id,a.date,a.time)} style={{background:'none',border:'1px solid var(--cream10)',color:'var(--cream20)',padding:'.22rem .5rem',fontSize:'.6rem',cursor:'pointer',display:'block',marginTop:'.2rem',letterSpacing:'1px'}}>✕ odbij</button>
                         </div>
                       </div>
                     ))
@@ -903,17 +863,12 @@ export default function FensiPage() {
       )}
 
       <style>{`
-        @keyframes fadeUp { from { opacity:0; transform:translateY(30px) } to { opacity:1; transform:none } }
-        @keyframes scrollPulse { 0%,100% { opacity:.3; transform:scaleY(1) } 50% { opacity:1; transform:scaleY(1.15) } }
-        @keyframes fabF { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-5px) } }
-        .srv-scroll::-webkit-scrollbar { display:none }
-        .gallery-drag::-webkit-scrollbar { display:none }
-        .srv-scroll { cursor: grab; }
-        .srv-scroll:active { cursor: grabbing; }
-        [data-d="1"] { transition-delay:.12s }
-        [data-d="2"] { transition-delay:.24s }
-        [data-d="3"] { transition-delay:.36s }
-        [data-d="4"] { transition-delay:.48s }
+        @keyframes fabF { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        @keyframes haFallback { to { opacity: 1 !important; } }
+        @keyframes scPulse { 0%,100%{opacity:.3} 50%{opacity:.8} }
+        .gal-img:hover { transform: scale(1.06) !important; }
+        .srv-scroll::-webkit-scrollbar { display:none; }
+        [data-r] { will-change: transform, opacity; }
       `}</style>
     </>
   )
